@@ -1,13 +1,187 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            position: relative;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            width: 20%;
+            background-color: #444;
+            padding: 10px;
+            margin-left: -20px;
+        }
+        .logo {
+            width: 100%;
+            height: auto;
+        }
+        .header-divider {
+            position: absolute;
+            left: 20%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: white;
+        }
+        .header-title {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+        }
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .header-icon {
+            width: 40px;
+            height: 40px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+        }
+        .banner {
+            width: 20%;
+            background-color: #0f2e4f;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px;
+            position: relative;
+        }
+        .banner button {
+            width: 100%;
+            height: 60px;
+            margin: 5px 0;
+            background-color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        .banner button:hover {
+            background-color: lightgray;
+        }
+        .sub-banner {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            width: 200px;
+            height: 100vh;
+            background-color: #004690;
+            color: white;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .banner button:hover + .sub-banner,
+        .sub-banner:hover,
+        .banner:hover .sub-banner {
+            display: flex;
+        }
+        .sub-banner button {
+            width: 100%;
+            height: 50px;
+            margin: 5px 0;
+            background-color: lightgray;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .sub-banner button:hover {
+            background-color: darkgray;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img class="logo" src="https://debtnext.com/wp-content/uploads/2018/06/DebtNext_logo.png" alt="DebtNext Software logo">
+        </div>
+        <div class="header-divider"></div>
+        <h1 class="header-title">DebtNext Home Dashboard</h1>
+        <div class="header-icons">
+            <img class="header-icon" src="images/custom_icon.svg" alt="Custom Icon">
+            <img class="header-icon" src="images/logout.svg" alt="Logout Icon">
+        </div>
+    </header>
+    <div class="container">
+        <div class="banner">
+            <button onmouseover="showSubBanner(1)" onmouseleave="hideSubBanner(1)">1</button>
+            <div class="sub-banner" id="sub-banner-1" onmouseover="keepSubBanner(1)" onmouseleave="hideSubBanner(1)">
+                <p>Subsection 1</p>
+                <button>Option A</button>
+                <button>Option B</button>
+            </div>
+            <button onmouseover="showSubBanner(2)" onmouseleave="hideSubBanner(2)">2</button>
+            <div class="sub-banner" id="sub-banner-2" onmouseover="keepSubBanner(2)" onmouseleave="hideSubBanner(2)">
+                <p>Subsection 2</p>
+                <button>Option C</button>
+                <button>Option D</button>
+            </div>
+            <button onmouseover="showSubBanner(3)" onmouseleave="hideSubBanner(3)">3</button>
+            <div class="sub-banner" id="sub-banner-3" onmouseover="keepSubBanner(3)" onmouseleave="hideSubBanner(3)">
+                <p>Subsection 3</p>
+                <button>Option E</button>
+                <button>Option F</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>Welcome to the homepage content area.</p>
+        </div>
+    </div>
+    <script>
+        function showSubBanner(id) {
+            document.getElementById('sub-banner-' + id).style.display = 'flex';
+        }
+        function hideSubBanner(id) {
+            setTimeout(() => {
+                document.getElementById('sub-banner-' + id).style.display = 'none';
+            }, 3500);
+        }
+        function keepSubBanner(id) {
+            document.getElementById('sub-banner-' + id).style.display = 'flex';
+        }
+    </script>
+</body>
 </html>
