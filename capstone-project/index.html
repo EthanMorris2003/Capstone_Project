@@ -42,7 +42,7 @@
             top: 0;
             bottom: 0;
             width: 2px;
-            background-color: white;
+            background-color: white; 
         }
         .header-title {
             flex-grow: 1;
@@ -98,7 +98,7 @@
             left: 100%;
             top: 0;
             width: 200px;
-            height: 100vh;
+            height: 100%;
             background-color: #004690;
             color: white;
             display: none;
@@ -141,8 +141,8 @@
         <div class="header-divider"></div>
         <h1 class="header-title">DebtNext Home Dashboard</h1>
         <div class="header-icons">
-            <img class="header-icon" src="images/custom_icon.svg" alt="Custom Icon">
-            <img class="header-icon" src="images/logout.svg" alt="Logout Icon">
+            <img class="header-icon" src="images/custom_icon.svg" alt="Custom Icon" style="color: aliceblue;">
+            <img class="header-icon" src="images/logout.svg" alt="Logout Icon" style="color: aliceblue;">
         </div>
     </header>
     <div class="container">
@@ -175,9 +175,10 @@
             document.getElementById('sub-banner-' + id).style.display = 'flex';
         }
         function hideSubBanner(id) {
-            setTimeout(() => {
-                document.getElementById('sub-banner-' + id).style.display = 'none';
-            }, 3500);
+            // setTimeout(() => {
+            //     document.getElementById('sub-banner-' + id).style.display = 'none';
+            // }, 3500);
+            document.getElementById('sub-banner-' + id).style.display = 'none';
         }
         function keepSubBanner(id) {
             document.getElementById('sub-banner-' + id).style.display = 'flex';
