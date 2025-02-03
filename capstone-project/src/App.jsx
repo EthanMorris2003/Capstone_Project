@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import './Style/App.css';
 
 export function App() {
   const [activeSubBanner, setActiveSubBanner] = useState(null);
