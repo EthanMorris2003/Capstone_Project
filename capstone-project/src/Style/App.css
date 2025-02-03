@@ -30,7 +30,7 @@ body, html {
   align-items: center;
   justify-content: space-between;
   padding: 15px;
-  position: relative;
+  position: fixed;
   box-sizing: border-box;
 }
 
