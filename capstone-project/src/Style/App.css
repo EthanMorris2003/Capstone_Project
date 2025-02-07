@@ -100,12 +100,17 @@ footer {
   flex-direction: column;
   align-items: stretch;
   padding: 10px;
-  position: relative;
+  position: fixed; /* Fixed positioning to stay aligned with header */
+  top: 15vh; /* Starts right below the header */
+  bottom: 0; /* Extends to the bottom of the viewport */
+  left: 0;
+  height: calc(100vh - 15vh); /* Makes sure it spans from the header to the bottom */
 }
+
 
 .banner button {
   width: 100%;
-  height: 60px;
+  height: 80px;
   margin: 5px 0;
   background-color: white;
   border: none;
@@ -125,8 +130,8 @@ footer {
   top: 0;
   width: 200px;
   height: 100%;
-  background-color: #004690;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
   display: none;
   flex-direction: column;
   padding: 20px;

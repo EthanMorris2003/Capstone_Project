@@ -21,12 +21,6 @@ export function App() {
         <div className="header-icons">
           <img
             className="header-icon"
-            src="images/custom_icon.svg"
-            alt="Custom Icon"
-            style={{ color: 'aliceblue' }}
-          />
-          <img
-            className="header-icon"
             src="images/logout.svg"
             alt="Logout Icon"
             style={{ color: 'aliceblue' }}
