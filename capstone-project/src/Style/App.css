@@ -1,40 +1,278 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background: url('capstone-project/Images/BBB.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+.banner {
+  position: fixed;
+  z-index: 10;
+}
+.banner button.active {
+  background-color: darkgray;
+}
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.homePage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.header {
+  width: 100%;
+  height: 10vh;
+  background-color: #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  position: fixed;
+  top: 0;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.body {
+  padding-top: 15vh;
+  flex: 1;
+  overflow-y: auto;
+}
+
+
+
+
+
+.header-title {
+  flex-grow: 1;
   text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.header-icons {
+  display: flex;
+  gap: 15px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header-icon {
+  width: 40px;
+  height: 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 15px;
 }
 
-.card {
-  padding: 2em;
-  font-size: 30px;
-  color: rgb(34, 1, 33)
+.container {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+.banner {
+  width: 20%;
+  background-color: rgba(15, 46, 79, 0.5); /* Makes the banner semi-transparent */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 10px;
+  position: fixed; /* Fixed positioning to stay aligned with the header */
+  top: calc(var(--header-height)); /* Starts right below the header */
+  bottom: 0; /* Extends to the bottom of the viewport */
+  left: 0;
+  height: 90vh; /* Fills the remaining space */
+  backdrop-filter: blur(10px); /* Adds a subtle blur effect */
+  border-right: 2px solid rgba(255, 255, 255, 0.2); /* Optional: Adds a subtle border for better contrast */
+}
+
+
+.banner button {
+  width: 100%;
+  height: 80px;
+  margin: 5px 0;
+  background-color: gray; /* Button background is gray */
+  color: white; /* Text is white */
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  position: relative;
+}
+
+.banner button:hover {
+  background-color: darkgray; /* Slightly darker gray on hover */
+  transform: scale(1.05); /* Slight pop effect */
+}
+
+
+.banner button:hover {
+  background-color: lightgray;
+}
+
+.sub-banner {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  display: none;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.banner button:hover+.sub-banner,
+.sub-banner:hover,
+.banner:hover .sub-banner {
+  display: flex;
+}
+
+.sub-banner button {
+  width: 100%;
+  height: 50px;
+  margin: 5px 0;
+  background-color: lightgray;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.sub-banner button:hover {
+  background-color: darkgray;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 600px; /* Adjust based on space needed */
+  display: flex;
+  flex-wrap: wrap; /* Allows multiple rows */
+  justify-content: center;
+  gap: 50px; /* Space between boxes */
+}
+
+/* Add hover animation for icon boxes */
+.icon-box {
+  width: 250px;
+  height: 300px;
+  background-color: white;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+  position: absolute;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+/* Hover effect: Slightly scale up and add a stronger shadow */
+.icon-box:hover {
+  transform: scale(1.1); /* Expands the box */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3); /* Adds more depth */
+}
+
+/* Adjust size of the SVG icons */
+.svg-icon {
+  width: 150px;
+  height: auto;
+  transition: transform 0.3s ease-in-out; /* Smooth effect for icon */
+}
+
+/* Hover effect for icons: Slightly grow */
+.icon-box:hover .svg-icon {
+  transform: scale(1.2); /* Slightly increase SVG size */
+}
+
+
+/* First Row Positions */
+.notes-box {
+  top: -70px;
+  right: 750px;
+}
+
+.calendar-box {
+  top: -70px;
+  right: 50px;
+}
+
+.customer-box {
+  top: -70px;
+  right: 400px;
+}
+
+/* Second Row Positions */
+.bell-box {
+  top: 270px;
+  right: 400px;
+}
+
+.placeholder-box {
+  top: 270px;
+  right: 750px;
+}
+
+.placeholder2-box {
+  top: 270px;
+  right: 50px;
+}
+
+/* Text styling inside the boxes */
+.icon-box p {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Logout button styling */
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Make sure the icon size is appropriate */
+.logout-icon {
+  width: 40px; /* Adjust size */
+  height: auto;
+  filter: invert(1); /* Makes it white if the header background is dark */
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Add hover effect */
+.logout-button:hover .logout-icon {
+  transform: scale(1.2); /* Slight pop effect on hover */
 }
