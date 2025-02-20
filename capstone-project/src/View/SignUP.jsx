@@ -1,4 +1,6 @@
-function SignUP() {
+import { Link } from "react-router-dom";
+
+function Signup() {
   return (
     <div className="backgroundContainer">
       <div className="signupContainer">
@@ -22,12 +24,16 @@ function SignUP() {
           <form>
             <input type="password" placeholder="Confirm Password" className="inputBoxPass" />
           </form>
-          <button className="createAccountButton">Sign Up</button>
-          <button className="backToLoginButton">Back to Login</button>
+          <button className="createAccountButtonSignUp">Sign Up</button>
+          <Link to="/login">
+            <button className="backToLoginButtonSignUp">
+              Back to Login
+            </button>
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default SignUP;
+export default Signup;

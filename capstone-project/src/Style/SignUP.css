@@ -44,7 +44,7 @@ body {
 
 
 /* Adjusted Buttons */
-.createAccountButton, .backToLoginButton {
+.createAccountButtonSignUp, .backToLoginButtonSignUp {
     width: 100%; /* Make buttons span full width */
     padding: 12px; /* Slightly adjusted padding */
     border-radius: 6px; /* Smaller button shape */
@@ -53,12 +53,18 @@ body {
 }
 
 /* Sign Up Button */
-.createAccountButton {
-    background: gray;
-    color: white;
-    border: 1px solid rgb(253, 253, 253);
+.createAccountButtonSignUp {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    outline: none;
+    border: 1px solid rgb(120, 120, 120); /* Darker Grey Border */
+    padding: 15px 32px;
+    border-radius: 12px;
+    background: gray; /* Medium Grey Background */
+    color: white; /* White Text */
+    font-weight: bold;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: .1s linear;
+    transition: 0.1s linear;
 }
 
 .createAccountButton:hover {
@@ -66,12 +72,18 @@ body {
 }
 
 /* Back to Login Button */
-.backToLoginButton {
-    background: gray;
-    color: white;
-    border: 1px solid gray;
-    margin-top: 5px; /* Reduced margin for compact look */
+.backToLoginButtonSignUp {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    outline: none;
+    border: 1px solid rgb(120, 120, 120); /* Darker Grey Border */
+    padding: 15px 32px;
+    border-radius: 12px;
+    background: gray; /* Medium Grey Background */
+    color: white; /* White Text */
+    font-weight: bold;
+    text-transform: uppercase;
     cursor: pointer;
+    transition: 0.1s linear;
 }
 
 .backToLoginButton:hover {
