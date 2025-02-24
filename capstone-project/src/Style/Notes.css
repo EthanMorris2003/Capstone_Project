@@ -1,0 +1,144 @@
+/* Notes Sidebar Styles */
+.notes-sidebar {
+    width: 200px;
+    background-color: white;
+    padding: 15px;
+    position: fixed;
+    top: 10vh;
+    left: 180px; /* Align next to existing banner */
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .new-note-button {
+    position: fixed;
+    top: 11vh;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .add-note {
+    background-color: green;
+    color: white;
+    border: none;
+    width: 120px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .add-note:hover {
+    transform: scale(1.05);
+  }
+  
+  .new-note-button span {
+    margin-top: 5px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .notes-list {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  /* Notes Area Styles */
+/* Notes Area Styles */
+/* Note title styles */
+.note-title {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  /* Notes container layout adjustments */
+  .notes-container {
+    display: flex;
+    flex-direction: column; /* Ensures vertical alignment of title and textarea */
+    width: calc(100% - 300px);
+    height: calc(100vh - 10vh - 15px);
+    margin: -120px auto 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  /* Adjust textarea for alignment */
+  .notes-area {
+    width: 100%; /* Match title input width exactly */
+    height: 100%;
+    resize: none;
+    padding: 30px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    outline: none;
+    background-color: white;
+    box-sizing: border-box;
+  }
+  
+  
+
+  .notes-sidebar h3 {
+    margin: 0;
+    padding-bottom: 5px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .notes-divider {
+    width: 80%;
+    border: 0;
+    border-top: 2px solid rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+  }
+
+  .complete-note {
+    background-color: rgb(100, 149, 237); /* Cornflower Blue */
+    color: white;
+    border: none;
+    width: 120px;
+    height: 40px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+  
+  .complete-note:hover {
+    background-color: rgb(70, 130, 180); /* Slightly darker blue */
+    transform: scale(1.05);
+  }
+  
+  .note-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.note-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+  

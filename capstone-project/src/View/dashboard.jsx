@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import notes from 'capstone-project/src/Assets/notes.svg';
 import calendar from 'capstone-project/src/Assets/calender.svg';
 import customer from 'capstone-project/src/Assets/customer.svg';
@@ -7,22 +8,17 @@ import placeholder from 'capstone-project/src/Assets/placeholder.svg';
 import placeholder2 from 'capstone-project/src/Assets/placeholder2.svg';
 import logout from 'capstone-project/src/Assets/logout.svg';
 
-
 export function Dashboard() {
   const [activeSubBanner, setActiveSubBanner] = useState(null);
 
   const bannerTexts = {
     1: "Notes",
     2: "Calendar",
-    3: "Tasks",
-    4: "Customer Info",
-    5: "Reports",
-    6: "Actions",
-    7: "Settings"
+    3: "Customer Info"
   };
 
   const handleClick = (id) => {
-    console.log(`Clicked: ${bannerTexts[id]}`); // Debugging
+    console.log(`Clicked: ${bannerTexts[id]}`);
     setActiveSubBanner(id);
   };
 
@@ -31,8 +27,7 @@ export function Dashboard() {
       <div className='header'>
         <div className="header-divider"></div>
         <h1 className="header-title">DebtNext Home Dashboard</h1>
-        
-        {/* Add the logout button inside the header-icons div */}
+
         <div className="header-icons">
           <button className="logout-button">
             <img src={logout} alt="Logout Icon" className="logout-icon" />
@@ -54,32 +49,21 @@ export function Dashboard() {
               </div>
             ))}
           </div>
+
           <div className="content">
             <div className="image-container">
-              <div className="icon-box notes-box">
-                <img src={notes} alt="Notes Icon" className="svg-icon" />
-                <p>Manage your notes efficiently.</p>
-              </div>
-              <div className="icon-box calendar-box">
-                <img src={calendar} alt="Calendar Icon" className="svg-icon" />
-                <p>Keep track of your schedule.</p>
-              </div>
-              <div className="icon-box customer-box">
-                <img src={customer} alt="Customer Icon" className="svg-icon" />
-                <p>Manage your customer interactions.</p>
-              </div>
-              <div className="icon-box bell-box">
-                <img src={bell} alt="Bell Icon" className="svg-icon" />
-                <p>Placeholder.</p>
-              </div>
-              <div className="icon-box placeholder-box">
-                <img src={placeholder} alt="Placeholder Icon" className="svg-icon" />
-                <p>Placeholder</p>
-              </div>
-              <div className="icon-box placeholder2-box">
-                <img src={placeholder2} alt="Placeholder2 Icon" className="svg-icon" />
-                <p>Placeholder</p>
-              </div>
+              {[{icon: notes, text: "Manage your notes efficiently."},
+                {icon: calendar, text: "Keep track of your schedule."},
+                {icon: customer, text: "Manage your customer interactions."},
+                {icon: bell, text: "Notifications"},
+                {icon: placeholder, text: "Placeholder"},
+                {icon: placeholder2, text: "Placeholder"}].map((item, index) => (
+                <div className="icon-box" key={index}>
+                  <img src={item.icon} alt="Icon" className="svg-icon" />
+                  <p>{item.text}</p>
+                  <button className="goToButton">Go To</button>
+                </div>
+              ))}
             </div>
           </div>
         </div>

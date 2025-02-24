@@ -5,6 +5,9 @@ import Dashboard from './View/dashboard';
 import Login from './View/login';
 import Home from './View/homepage';
 import Signup from './View/signup';
+import Notes from './View/Notes'; 
+import Calendar from './View/Calendar'; 
+
 
 function App() {
   return (
@@ -14,6 +17,9 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="/notes" element={<Notes />} /> 
+        <Route path="/calendar" element={<Calendar />} /> 
+
       </Routes>
     </Router>
   );
