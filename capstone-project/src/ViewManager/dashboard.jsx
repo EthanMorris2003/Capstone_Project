@@ -22,7 +22,7 @@ export function Dashboard() {
   const handleClick = (id) => {
     switch (id) {
       case 1:
-        navigate('/dashboard/home');
+        navigate('/dashboard');
         break;
       case 2:
         navigate('/dashboard/notes');
@@ -41,9 +41,11 @@ export function Dashboard() {
         <h1 className="header-title">DebtNext Home Dashboard</h1>
 
         <div className="header-icons">
-          <button className="logout-button">
-            <img src={logout} alt="Logout Icon" className="logout-icon" />
-          </button>
+          <Link to="/login">
+            <button className="logout-button">
+              <img src={logout} alt="Logout Icon" className="logout-icon" />
+            </button>
+          </Link>
         </div>
       </div>
 

@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Dashboard from './ViewManager/dashboard';
 import Login from './View/login';
 import Home from './View/homepage';
@@ -16,7 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="dashboard" element={<Dashboard />}>
-          <Route path="home" element={<DashboardHome />}/>
+          <Route index element={<DashboardHome />} />
           <Route path="notes" element={<Notes />} />
           <Route path="calendar" element={<Calendar />} />
         </Route>

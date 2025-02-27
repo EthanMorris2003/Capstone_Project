@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function Login() {
   return (
-    <>
+    <div>
       <div className="loginContainer">
         <div>
           <h1 className="logoTextLog">DebtNext Dashboard</h1>
@@ -33,7 +33,7 @@ function Login() {
           </Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
