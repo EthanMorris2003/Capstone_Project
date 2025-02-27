@@ -38,6 +38,21 @@ app.post('/signup', (req, res) => {
   });
 });
 
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const query = 'SELECT * FROM user_info WHERE EXISTS (username = ? AND password = ?)';
+  db.query(query, [username, password], (err, result) => {
+    if (err) {
+      console.error('username and/or password is incorrect:', err);
+      res.status(500).send('username and/or password is incorrect');
+      return;
+    }
+    res.status(200).send('User signed in successfully');
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
