@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import notes from 'capstone-project/src/Assets/notes.svg';
 import calendar from 'capstone-project/src/Assets/calender.svg';
 import customer from 'capstone-project/src/Assets/customer.svg';
@@ -11,14 +11,26 @@ import logout from 'capstone-project/src/Assets/logout.svg';
 export function Dashboard() {
   const [activeSubBanner, setActiveSubBanner] = useState(null);
 
+  const navigate = useNavigate();
+
   const bannerTexts = {
-    1: "Notes",
-    2: "Calendar",
-    3: "Customer Info"
+    1: "Dashboard",
+    2: "Notes",
+    3: "Calendar"
   };
 
   const handleClick = (id) => {
-    console.log(`Clicked: ${bannerTexts[id]}`);
+    switch (id) {
+      case 1:
+        navigate('/dashboard/home');
+        break;
+      case 2:
+        navigate('/dashboard/notes');
+        break;
+      case 3:
+        navigate('/dashboard/calendar');
+        break;
+    }
     setActiveSubBanner(id);
   };
 
@@ -41,8 +53,8 @@ export function Dashboard() {
             {Object.keys(bannerTexts).map((id) => (
               <div key={id} className="banner-item">
                 <button
-                  onClick={() => handleClick(id)}
-                  className={activeSubBanner === id ? "active" : ""}
+                  onClick={() => handleClick(parseInt(id))}
+                  className={activeSubBanner === parseInt(id) ? "active" : ""}
                 >
                   {bannerTexts[id]}
                 </button>
@@ -50,22 +62,7 @@ export function Dashboard() {
             ))}
           </div>
 
-          <div className="content">
-            <div className="image-container">
-              {[{icon: notes, text: "Manage your notes efficiently."},
-                {icon: calendar, text: "Keep track of your schedule."},
-                {icon: customer, text: "Manage your customer interactions."},
-                {icon: bell, text: "Notifications"},
-                {icon: placeholder, text: "Placeholder"},
-                {icon: placeholder2, text: "Placeholder"}].map((item, index) => (
-                <div className="icon-box" key={index}>
-                  <img src={item.icon} alt="Icon" className="svg-icon" />
-                  <p>{item.text}</p>
-                  <button className="goToButton">Go To</button>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Outlet />
         </div>
       </div>
     </div>

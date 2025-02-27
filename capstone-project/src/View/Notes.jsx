@@ -38,61 +38,45 @@ export function Notes() {
   };
 
   return (
-    <div className='homePage'>
-      <div className='header'>
-        <h1 className="header-title">Notes Section</h1>
-        <div className="header-icons">
-          <button className="logout-button">
-            <img src={logout} alt="Logout Icon" className="logout-icon" />
-          </button>
+    <div className='body'>
+      <div className="container">
+
+        <div className="notes-sidebar">
+          <h3>Previous Notes</h3>
+          <hr className="notes-divider" />
+          <div className="notes-list">
+            {notes.map((note, index) => (
+              <div
+                key={index}
+                className={`note-item ${index === editingIndex ? 'selected' : ''}`}
+                onClick={() => selectNote(note, index)}
+              >
+                {note.title}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className='body'>
-        <div className="container">
-          <div className="banner">
-            <button>Dashboard</button>
-            <button className="active">Notes</button>
-            <button>Calendar</button>
-          </div>
+        <div className="new-note-button">
+          <button className="add-note" onClick={handleNewNote}>+ New Note</button>
+          <button className="complete-note" onClick={handleCompleteNote}>Complete Note</button>
+        </div>
 
-          <div className="notes-sidebar">
-            <h3>Previous Notes</h3>
-            <hr className="notes-divider" />
-            <div className="notes-list">
-              {notes.map((note, index) => (
-                <div
-                  key={index}
-                  className={`note-item ${index === editingIndex ? 'selected' : ''}`}
-                  onClick={() => selectNote(note, index)}
-                >
-                  {note.title}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="new-note-button">
-            <button className="add-note" onClick={handleNewNote}>+ New Note</button>
-            <button className="complete-note" onClick={handleCompleteNote}>Complete Note</button>
-          </div>
-
-          <div className="content">
-            <div className="notes-container">
-              <input
-                type="text"
-                className="note-title"
-                placeholder="Enter This Notes Title..."
-                value={noteTitle}
-                onChange={(e) => setNoteTitle(e.target.value)}
-              />
-              <textarea
-                className="notes-area"
-                placeholder="Start typing your note here..."
-                value={currentNote}
-                onChange={(e) => setCurrentNote(e.target.value)}
-              ></textarea>
-            </div>
+        <div className="content">
+          <div className="notes-container">
+            <input
+              type="text"
+              className="note-title"
+              placeholder="Enter This Notes Title..."
+              value={noteTitle}
+              onChange={(e) => setNoteTitle(e.target.value)}
+            />
+            <textarea
+              className="notes-area"
+              placeholder="Start typing your note here..."
+              value={currentNote}
+              onChange={(e) => setCurrentNote(e.target.value)}
+            ></textarea>
           </div>
         </div>
       </div>
