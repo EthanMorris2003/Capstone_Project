@@ -8,17 +8,20 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server/server.cjs"
+    "start": "node server/server.cjs",
+    "start-all": "concurrently \"npm run dev\" \"npm run start\""
   },
   "dependencies": {
     "axios": "^1.8.1",
     "body-parser": "^1.20.3",
     "capstone-project": "file:",
+    "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "mysql": "^2.18.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
