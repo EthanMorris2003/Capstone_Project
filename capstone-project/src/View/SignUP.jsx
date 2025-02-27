@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
-function SignUP() {
+function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +25,7 @@ function SignUP() {
       alert('Error signing up');
     }
   };
-
+  
   return (
     <div className="backgroundContainer">
       <div className="signupContainer">
@@ -71,14 +72,16 @@ function SignUP() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </form>
-          <button className="createAccountButton" onClick={handleSignUp}>
-            Sign Up
-          </button>
-          <button className="backToLoginButton">Back to Login</button>
+          <button className="createAccountButtonSignUp">Sign Up</button>
+          <Link to="/login">
+            <button className="backToLoginButtonSignUp">
+              Back to Login
+            </button>
+          </Link>
         </div>
       </div>
     </div>
   );
 }
 
-export default SignUP;
+export default Signup;

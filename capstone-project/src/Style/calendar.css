@@ -1,0 +1,29 @@
+.calendar-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+/* Ensure Calendar Container Expands */
+.calendar-wrapper {
+  background-color: white !important;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: calc(100vh - 50px); /* Makes it fit screen height */
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: relative;
+  top: -80px; /* Move it up */
+}
+
+/* Expand Calendar to Bottom */
+.rbc-calendar {
+  width: 100% !important;
+  height: 100% !important; /* Ensures it takes full space */
+  max-height: calc(100vh - 50px) !important; /* Expands to full page */
+}

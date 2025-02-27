@@ -4,6 +4,7 @@ body {
     background: url('capstone-project/Images/BBB.jpg') no-repeat center center fixed;
     background-size: cover;
 }
+
 .login-page .loginContainer {
     background-color: rgba(241, 241, 241, 0.85);
     padding: 30px 25px;
@@ -15,7 +16,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    margin-top: 20px; 
+    margin-top: 20px;
 }
 
 .logText {
@@ -23,16 +24,19 @@ body {
     font-style: italic;
     font-weight: bold;
     font-size: 15px;
-    text-align: left;   
+    text-align: left;
+    width: 350px;
+    margin-left: -130px; /* Adjust this negative margin value as needed for alignment */
 }
 
 .logoTextLog {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-size: 50px;
-    margin-top: -50px; 
+    margin-top: -50px;
 }
 
-.inputBoxUser {
+.inputBoxUser,
+.inputBoxPass {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     height: 48px;
     width: 350px;
@@ -42,54 +46,26 @@ body {
     color: rgb(255, 255, 255);
     background: rgb(73, 73, 73);
     padding-left: 8px;
-    justify-content: left;
 }
 
-.inputBoxPass {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    height: 48px;
-    width: 350px;
-    font-size: large;
-    border-radius: 8px;
-    border: 1px solid rgb(0, 0, 0);
-    color: rgb(251, 251, 251);
-    background: rgb(73, 73, 73);
-    padding-left: 8px;
-    justify-content: left;
-}
-
-.inputButton {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    outline: none;
-    border: 1px solid rgb(100, 100, 100); /* Dark Grey Border */
-    padding: 15px 32px;
-    border-radius: 12px;
-    background: rgb(180, 180, 180); /* Light Grey Background */
-    color: rgb(255, 255, 255); /* White Text */
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: 0.1s linear;
-}
-
-.inputButton:hover {
-    background: rgb(150, 150, 150); /* Slightly darker grey on hover */
-}
-
+.inputButton,
 .createAccountButton {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     outline: none;
-    border: 1px solid rgb(120, 120, 120); /* Darker Grey Border */
+    border: 1px solid rgb(100, 100, 100);
     padding: 15px 32px;
     border-radius: 12px;
-    background: rgb(200, 200, 200); /* Medium Grey Background */
-    color: rgb(50, 50, 50); /* Dark Grey Text */
+    background: rgb(180, 180, 180);
+    color: rgb(255, 255, 255);
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
     transition: 0.1s linear;
+    width: 350px;
+    box-sizing: border-box;
 }
 
+.inputButton:hover,
 .createAccountButton:hover {
-    background: rgb(170, 170, 170); /* Darker Grey Hover */
+    background: rgb(150, 150, 150);
 }
