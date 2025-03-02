@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
   
   const handleSignUp = async () => {
     if (username == '' || password == ''){
@@ -23,6 +24,7 @@ function Signup() {
         password
       });
       alert(response.data);
+      navigate("/login");
     } catch (error) {
       console.error('Error signing up:', error);
       alert('Error signing up');

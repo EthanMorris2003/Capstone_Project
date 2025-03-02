@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if(username == '' || password == ''){
@@ -18,6 +19,7 @@ function Login() {
         password
       });
       alert(response.data);
+      navigate('/Dashboard');
     } catch(error){
       console.error('Error loging in:', error);
       alert('Error Login in');
