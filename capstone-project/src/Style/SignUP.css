@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: url('capstone-project/Images/BBB.jpg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 110vh;
+}
+
+.signup-page .signupContainer {
+    background-color: rgba(241, 241, 241, 0.85);
+    padding: 30px 25px;
+    width: 450px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid white;
+}
+
+
+.logoTextLog {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 35px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.logText {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: left;
+    width: 170%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-left: 10px; /* Adjust this negative margin value to fine-tune alignment */
+}
+
+
+.inputBoxUser,
+.inputBoxPass {
+    height: 42px;
+    width: 170%;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid rgb(0, 0, 0);
+    color: white;
+    background: rgb(73, 73, 73);
+    padding-left: 10px;
+    box-sizing: border-box;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.createAccountButtonSignUp,
+.backToLoginButtonSignUp {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    width: 100%;
+    outline: none;
+    border: 1px solid rgb(120, 120, 120);
+    padding: 15px 32px;
+    border-radius: 12px;
+    background: rgb(180, 180, 180);
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.1s linear;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.createAccountButtonSignUp:hover,
+.backToLoginButtonSignUp:hover {
+    background: rgb(150, 150, 150);
+}

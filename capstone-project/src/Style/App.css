@@ -1,0 +1,187 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: url('capstone-project/Images/BBB.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.homePage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.header {
+  width: 100%;
+  height: 10vh;
+  background-color: #333;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-title {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Arial', sans-serif;
+}
+
+.header-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.logout-icon {
+  width: 40px;
+  height: auto;
+  filter: invert(1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.logout-button:hover .logout-icon {
+  transform: scale(1.2);
+}
+
+.body {
+  padding-top: 15vh;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+}
+
+.banner {
+  width: 180px; /* Thinner banner */
+  background-color: rgba(15, 46, 79, 0.5);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  position: fixed;
+  top: 10vh;
+  bottom: 0;
+  left: 0;
+  height: 90vh;
+  backdrop-filter: blur(10px);
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.banner button {
+  width: 100%;
+  height: 80px;
+  margin: 5px 0;
+  background-color: gray;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, transform 0.2s;
+  box-sizing: border-box;
+}
+
+.banner button:hover,
+.banner button.active {
+  background-color: darkgray;
+  transform: scale(1.05);
+}
+
+.content {
+  margin-left: 200px; /* Adjusted margin due to thinner banner */
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  width: 100%;
+  justify-items: center;
+}
+
+.icon-box {
+  width: 250px;
+  height: 340px; /* Increased height to accommodate button */
+  background-color: white;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.icon-box .goToButton {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(180, 180, 180);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.icon-box .goToButton:hover {
+  background-color: rgb(150, 150, 150);
+}
+
+.icon-box:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.svg-icon {
+  width: 150px;
+  height: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.icon-box:hover .svg-icon {
+  transform: scale(1.2);
+}
+
+.icon-box p {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
