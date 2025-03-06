@@ -22,13 +22,13 @@ export function Dashboard() {
   const handleClick = (id) => {
     switch (id) {
       case 1:
-        navigate('/dashboard');
+        navigate('/');
         break;
       case 2:
-        navigate('/dashboard/notes');
+        navigate('/notes');
         break;
       case 3:
-        navigate('/dashboard/calendar');
+        navigate('/calendar');
         break;
     }
     setActiveSubBanner(id);

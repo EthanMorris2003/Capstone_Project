@@ -11,18 +11,16 @@ import Calendar from './View/Calendar';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="dashboard" element={<Dashboard />}>
-          <Route index element={<DashboardHome />} />
-          <Route path="notes" element={<Notes />} />
-          <Route path="calendar" element={<Calendar />} />
-        </Route>
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-      </Routes>
-    </Router>
+    <Routes>
+      {/* <Route path="/" element={<Dashboard />} >
+        <Route index element={<DashboardHome />} />
+        <Route path="notes" element={<Notes />} />
+        <Route path="calendar" element={<Calendar />} />
+      </Route> */}
+
+      <Route path="/test1" element={<Login />} />
+      <Route path="/test2" element={<Signup />} /> */
+    </Routes>
   );
 }
 
