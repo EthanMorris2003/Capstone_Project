@@ -10,7 +10,7 @@ import Calendar from './View/Calendar.jsx';
 import './Style/App.css'
 import './Style/login.css'
 import './Style/SignUP.css'
-import './Style/notes.css'
+import './Style/Notes.css'
 import './Style/calendar.css'
 
 createRoot(document.getElementById('root')).render(
