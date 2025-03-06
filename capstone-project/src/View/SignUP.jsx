@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const navigate = useNavigate();
+  
   const handleSignUp = async () => {
+    if (username == '' || password == ''){
+      alert("All fields need to be filled");
+      return;
+    }
     if (password !== confirmPassword) {
       alert("Passwords don't match");
       return;
@@ -20,6 +24,7 @@ function Signup() {
         password
       });
       alert(response.data);
+      navigate("/login");
     } catch (error) {
       console.error('Error signing up:', error);
       alert('Error signing up');
@@ -42,16 +47,6 @@ function Signup() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </form>
-          <div className="logText">Email</div>
-          <form>
-            <input
-              type="email"
-              placeholder="Email"
-              className="inputBoxUser"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </form>
           <div className="logText">Password</div>
           <form>
             <input
@@ -72,7 +67,7 @@ function Signup() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </form>
-          <button className="createAccountButtonSignUp">Sign Up</button>
+          <button className="createAccountButtonSignUp" onClick={handleSignUp}>Sign Up</button>
           <Link to="/login">
             <button className="backToLoginButtonSignUp">
               Back to Login
