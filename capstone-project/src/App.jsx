@@ -7,6 +7,7 @@ import DashboardHome from './View/DashboardHome';
 import Signup from './View/signup';
 import Notes from './View/Notes';
 import Calendar from './View/Calendar';
+import DashboardMain from './ViewManager/dashboard';
 
 function App() {
   return (
