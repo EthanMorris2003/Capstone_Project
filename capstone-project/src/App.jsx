@@ -9,7 +9,6 @@ import Notes from './View/Notes';
 import Calendar from './View/Calendar';
 import DashboardMain from './ViewManager/dashboard';
 
-
 function App() {
   return (
     <Router>

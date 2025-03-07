@@ -15,15 +15,6 @@ import './Style/calendar.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-   <Router>
-      <Routes>
-        <Route path="/" element={<App />} /> {/* Default route for the dashboard */}
-        <Route path="/signup" element={<SignUP />} /> {/* Route for the SignUP page */}
-        <Route path="/login" element={<Login />} /> {/* Route for the Login page */}
-        <Route path="/dashboard" element={<Dashboard />} /> {}
-        <Route path="/dashboard/notes" element={<Notes />} /> {}
-        <Route path="/dashboard/calendar" element={<Calendar />} /> {}
-      </Routes>
-    </Router>
+    <App></App>
   </StrictMode>,
 )
