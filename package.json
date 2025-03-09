@@ -2,6 +2,7 @@
   "dependencies": {
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.47",
-    "react-big-calendar": "^1.18.0"
+    "react-big-calendar": "^1.18.0",
+    "react-router-dom": "^7.3.0"
   }
 }
