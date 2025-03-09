@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import App from './App.jsx' 
 import SignUP from './View/signup.jsx' 
 import Login from './View/login.jsx'
+import Dashboard from './ViewManager/dashboard.jsx'
+import Notes from './View/Notes.jsx'
+import Calendar from './View/Calendar.jsx';
 import './Style/App.css'
 import './Style/login.css'
 import './Style/SignUP.css'
