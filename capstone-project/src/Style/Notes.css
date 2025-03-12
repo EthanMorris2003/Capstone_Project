@@ -158,3 +158,34 @@
 .delete-note:hover {
   color: darkred;
 }
+
+/* Pin Note Button at Bottom-Right */
+.pin-note-button-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.pin-note-btn {
+  background-color: gold;
+  color: black;
+  border: none;
+  width: 140px;
+  height: 45px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.pin-note-btn:hover {
+  background-color: darkgoldenrod;
+  transform: scale(1.05);
+}
+
+.pin-note-btn:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
