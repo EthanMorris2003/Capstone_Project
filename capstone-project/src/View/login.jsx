@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -8,21 +8,26 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if(username == '' || password == ''){
+    if (username == '' || password == '') {
       alert("All fields need to be filled");
       return;
     }
 
-    try{
-      const response = await axios.post('/api/login', {
+    try {
+      const response = await axios.post('http://localhost:5000/api/login', {
         username,
         password
       });
-      alert(response.data);
-      navigate('/Dashboard');
-    } catch(error){
-      console.error('Error loging in:', error);
-      alert('Error Login in');
+      console.log(response.data);
+      if (response.data === "User authenticated successfully") {
+        alert(response.data);
+        navigate('/Dashboard');
+      } else {
+        alert('Incorrect Credentials');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      alert('Error logging in');
     }
   };
 
