@@ -1,10 +1,12 @@
+require('dotenv').config({ path: './.env' });
+
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const secureCompare = require('secure-compare')
 const bcrypt = require('bcrypt'); // For password hashing
 require('dotenv').config(); // Load environment variables from .env file
-
 
 const app = express();
 const port = 5000;
@@ -12,11 +14,14 @@ const port = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
+console.log(process.env);
+
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: process.env.DB_USER || 'root', // Replace with your MySQL username
-  password: process.env.DB_PASSWORD || '', // Replace with your MySQL password
-  database: 'capstone' // Replace with your database name
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
 });
 
 db.connect((err) => {
@@ -90,6 +95,9 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/api/test', (req, res) => {
+  res.send('This is the test route!');
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
