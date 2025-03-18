@@ -4,7 +4,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const secureCompare = require('secure-compare')
+const secureCompare = require('secure-compare');
 const bcrypt = require('bcrypt'); // For password hashing
 require('dotenv').config(); // Load environment variables from .env file
 
@@ -17,11 +17,11 @@ app.use(bodyParser.json());
 console.log(process.env);
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
 });
 
 db.connect((err) => {
@@ -48,7 +48,7 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = await hashPassword(password);
 
     const query = 'INSERT INTO user_info (username, password) VALUES (?, AES_ENCRYPT(?, ?))';
-    db.query(query, [username, hashedPassword, secretKey], (err, result) => {
+    db.query(query, [username, password, secretKey], (err, result) => {
       if (err) {
         console.error('Error inserting user:', err);
         res.status(500).send('Error signing up');
@@ -78,10 +78,15 @@ app.post('/login', async (req, res) => {
 
       if (result.length > 0) {
         const user = result[0];
-        const decryptedPassword = user.decryptedPassword.toString();
-        const isMatch = await bcrypt.compare(password, decryptedPassword);
+        let decryptedPassword = user.decryptedPassword;
+
+        if (Buffer.isBuffer(decryptedPassword)) {
+          decryptedPassword = decryptedPassword.toString('utf8');
+        }
+
+        const isMatch = secureCompare(password, decryptedPassword);
         if (isMatch) {
-          res.status(200).send('User signed in successfully');
+          res.status(200).send('User authenticated successfully');
         } else {
           res.status(401).send('Invalid username or password');
         }
@@ -90,8 +95,7 @@ app.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error verifying user:', error);
-    res.status(500).send('Error logging in');
+    res.status(500).send('Error logging in: ', err);
   }
 });
 
