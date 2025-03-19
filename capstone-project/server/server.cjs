@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const secureCompare = require('secure-compare');
 const bcrypt = require('bcrypt'); // For password hashing
+const jwt = require('jsonwebtoken');
+
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
@@ -13,8 +15,6 @@ const port = 5000;
 
 app.use(cors());
 app.use(bodyParser.json());
-
-console.log(process.env);
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -33,7 +33,8 @@ db.connect((err) => {
 });
 
 // Environment variable for encryption key
-const secretKey = process.env.MYSQL_ENCRYPTION_KEY || 'default_secret_key'; //REPLACE WITH KEY
+const secretKey = process.env.MYSQL_ENCRYPTION_KEY;
+const jwtKey = process.env.JWT_KEY;
 
 async function hashPassword(password) {
   const saltRounds = 10;
@@ -68,7 +69,7 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = 'SELECT userId, AES_DECRYPT(password, ?) AS decryptedPassword FROM user_info WHERE username = ?';
+    const query = 'SELECT userId, username, AES_DECRYPT(password, ?) AS decryptedPassword FROM user_info WHERE username = ?';
     db.query(query, [secretKey, username], async (err, result) => {
       if (err) {
         console.error('Error retrieving user:', err);
@@ -86,7 +87,15 @@ app.post('/login', async (req, res) => {
 
         const isMatch = secureCompare(password, decryptedPassword);
         if (isMatch) {
-          res.status(200).send('User authenticated successfully');
+          const token = jwt.sign({
+            userId: user.userId,
+            username: user.username
+          }, jwtKey);
+
+          return res.status(200).send({
+            message: 'User authenticated successfully',
+            token: token
+          });
         } else {
           res.status(401).send('Invalid username or password');
         }

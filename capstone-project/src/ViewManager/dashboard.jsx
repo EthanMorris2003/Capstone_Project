@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import notes from 'capstone-project/src/Assets/notes.svg';
-import calendar from 'capstone-project/src/Assets/calender.svg';
-import customer from 'capstone-project/src/Assets/customer.svg';
-import bell from 'capstone-project/src/Assets/bell.svg';
-import placeholder from 'capstone-project/src/Assets/placeholder.svg';
-import placeholder2 from 'capstone-project/src/Assets/placeholder2.svg';
+import { jwtDecode } from "jwt-decode";
 import logout from 'capstone-project/src/Assets/logout.svg';
 
 export function Dashboard() {
@@ -34,6 +29,12 @@ export function Dashboard() {
     setActiveSubBanner(id);
   };
 
+  const token = localStorage.getItem('authToken');
+  let userInfo;
+  if (token) {
+    userInfo = jwtDecode(token);
+  }
+
   return (
     <div className='homePage'>
       <div className='header'>
@@ -42,9 +43,11 @@ export function Dashboard() {
 
         <div className="header-icons">
           <Link to="/login">
-            <button className="logout-button">
-              <img src={logout} alt="Logout Icon" className="logout-icon" />
-            </button>
+            {(token && userInfo)?
+              (<p className='username'>{userInfo.username}</p>) :
+              (<button className="logout-button">
+                  <img src={logout} alt="Logout Icon" className="logout-icon" />
+                </button>)}
           </Link>
         </div>
       </div>
