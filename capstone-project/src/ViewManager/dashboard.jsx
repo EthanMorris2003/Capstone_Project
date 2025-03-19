@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import logout from 'capstone-project/src/Assets/logout.svg';
 
 export function Dashboard() {
-  const [activeSubBanner, setActiveSubBanner] = useState(null);
+  const [activeSubBanner, setActiveSubBanner] = useState(1);
 
   const navigate = useNavigate();
 
@@ -14,26 +14,45 @@ export function Dashboard() {
     3: "Calendar"
   };
 
-  const handleClick = (id) => {
-    switch (id) {
-      case 1:
-        navigate('/dashboard');
-        break;
-      case 2:
-        navigate('/dashboard/notes');
-        break;
-      case 3:
-        navigate('/dashboard/calendar');
-        break;
-    }
-    setActiveSubBanner(id);
-  };
-
   const token = localStorage.getItem('authToken');
   let userInfo;
   if (token) {
-    userInfo = jwtDecode(token);
+    try {
+      userInfo = jwtDecode(token);
+    } catch (error) {
+      console.error('Invalid token:', error);
+    }
   }
+
+  const handleClick = (id) => {
+    const isAuthenticated = localStorage.getItem('authToken');
+    
+    switch (id) {
+      case 1:
+        navigate('/dashboard');
+        setActiveSubBanner(id);
+        break;
+      case 2:
+        if (isAuthenticated) {
+          navigate('/dashboard/notes');
+          setActiveSubBanner(id);
+        } else {
+          alert("Please log in to access this feature.");
+        }
+        break;
+      case 3:
+        if (isAuthenticated) {
+          navigate('/dashboard/calendar');
+          setActiveSubBanner(id);
+        } else {
+          alert("Please log in to access this feature.");
+        }
+        break;
+      default:
+        break;
+    }
+
+  };
 
   return (
     <div className='homePage'>
@@ -42,13 +61,18 @@ export function Dashboard() {
         <h1 className="header-title">DebtNext Home Dashboard</h1>
 
         <div className="header-icons">
-          <Link to="/login">
             {(token && userInfo)?
-              (<p className='username'>{userInfo.username}</p>) :
-              (<button className="logout-button">
-                  <img src={logout} alt="Logout Icon" className="logout-icon" />
-                </button>)}
-          </Link>
+              (<a className='username' onClick={() => {
+                  localStorage.removeItem('authToken')
+                  navigate('/login');
+                }}>
+                {userInfo.username}
+              </a>) :
+            (<Link to="/login">
+              <button className="logout-button">
+                <img src={logout} alt="Logout Icon" className="logout-icon" />
+              </button>
+            </Link>)}
         </div>
       </div>
 
