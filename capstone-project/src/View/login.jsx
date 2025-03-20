@@ -14,13 +14,12 @@ function Login() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await axios.post('http://localhost:5000/login', {
         username,
         password
       });
-      console.log(response.data);
-      if (response.data === "User authenticated successfully") {
-        alert(response.data);
+      if (response.data.message === "User authenticated successfully") {
+        localStorage.setItem('authToken', response.data.token);
         navigate('/Dashboard');
       } else {
         alert('Incorrect Credentials');

@@ -4,8 +4,10 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const secureCompare = require('secure-compare')
+const secureCompare = require('secure-compare');
 const bcrypt = require('bcrypt'); // For password hashing
+const jwt = require('jsonwebtoken');
+
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
@@ -14,14 +16,12 @@ const port = 5000;
 app.use(cors());
 app.use(bodyParser.json());
 
-console.log(process.env);
-
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT
 });
 
 db.connect((err) => {
@@ -33,7 +33,8 @@ db.connect((err) => {
 });
 
 // Environment variable for encryption key
-const secretKey = process.env.MYSQL_ENCRYPTION_KEY || 'default_secret_key'; //REPLACE WITH KEY
+const secretKey = process.env.MYSQL_ENCRYPTION_KEY;
+const jwtKey = process.env.JWT_KEY;
 
 async function hashPassword(password) {
   const saltRounds = 10;
@@ -48,7 +49,7 @@ app.post('/signup', async (req, res) => {
     const hashedPassword = await hashPassword(password);
 
     const query = 'INSERT INTO user_info (username, password) VALUES (?, AES_ENCRYPT(?, ?))';
-    db.query(query, [username, hashedPassword, secretKey], (err, result) => {
+    db.query(query, [username, password, secretKey], (err, result) => {
       if (err) {
         console.error('Error inserting user:', err);
         res.status(500).send('Error signing up');
@@ -68,7 +69,7 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = 'SELECT userId, AES_DECRYPT(password, ?) AS decryptedPassword FROM user_info WHERE username = ?';
+    const query = 'SELECT userId, username, AES_DECRYPT(password, ?) AS decryptedPassword FROM user_info WHERE username = ?';
     db.query(query, [secretKey, username], async (err, result) => {
       if (err) {
         console.error('Error retrieving user:', err);
@@ -78,10 +79,23 @@ app.post('/login', async (req, res) => {
 
       if (result.length > 0) {
         const user = result[0];
-        const decryptedPassword = user.decryptedPassword.toString();
-        const isMatch = await bcrypt.compare(password, decryptedPassword);
+        let decryptedPassword = user.decryptedPassword;
+
+        if (Buffer.isBuffer(decryptedPassword)) {
+          decryptedPassword = decryptedPassword.toString('utf8');
+        }
+
+        const isMatch = secureCompare(password, decryptedPassword);
         if (isMatch) {
-          res.status(200).send('User signed in successfully');
+          const token = jwt.sign({
+            userId: user.userId,
+            username: user.username
+          }, jwtKey);
+
+          return res.status(200).send({
+            message: 'User authenticated successfully',
+            token: token
+          });
         } else {
           res.status(401).send('Invalid username or password');
         }
@@ -90,13 +104,54 @@ app.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error verifying user:', error);
-    res.status(500).send('Error logging in');
+    res.status(500).send('Error logging in: ', err);
   }
 });
 
-app.get('/api/test', (req, res) => {
-  res.send('This is the test route!');
+app.post('/add_note', async (req, res) => {
+  const {username, noteTitle, noteContent} = req.body;
+
+  if (!username) {
+    res.status(400).send('No user information found. Please log in');
+    return;
+  }
+
+  try {
+    const addNoteQuery = "INSERT INTO note (name, description) VALUES (?, ?)";
+
+    db.query(addNoteQuery, [noteTitle, noteContent], (errAddNote, resultAddNote) => {
+
+      if (errAddNote) {
+        console.error('Error adding note:', errAddNote);
+        res.status(500).send('Error adding note');
+        return;
+      }
+
+      const noteId = resultAddNote.insertId;
+
+      const addRelationQuery =
+      `
+        INSERT INTO user_note (userId, noteId)
+        SELECT ui.userId, n.noteId
+        FROM user_info AS ui
+        JOIN note n ON n.noteId = ?
+        WHERE ui.username = ?
+      `
+
+      db.query(addRelationQuery, [noteId, username], (errAddRelation, resultAddRelation) => {
+        if (errAddRelation) {
+          console.error('Error adding relationship:', errAddRelation);
+          res.status(500).send('Error adding relationship');
+          return;
+        }
+      });
+
+      res.status(200).send("Note added successfully");
+    });
+
+  } catch (error) {
+    res.status(500).send('Error adding note: ', err);
+  }
 });
 
 app.listen(port, () => {
