@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import logout from 'capstone-project/src/Assets/logout.svg';
+import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 export function Notes() {
   const [notes, setNotes] = useState([]);
@@ -7,7 +8,35 @@ export function Notes() {
   const [noteTitle, setNoteTitle] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
 
-  const handleCompleteNote = () => {
+  const handleCompleteNote = async () => {
+    if (noteTitle == '' || currentNote == '') {
+      alert("All fields need to be filled");
+      return;
+    }
+
+    let username = jwtDecode(localStorage.getItem('authToken')).username;
+    if (!username) {
+      console.error("Please log in before adding a note");
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5000/add_note', {
+        username: username,
+        noteTitle: noteTitle,
+        noteContent: currentNote
+      });
+      console.log(response);
+      if (response.data === "Note added successfully") {
+        alert('Note added successfully');
+      } else {
+        alert('Error adding note');
+      }
+    } catch (error) {
+      console.error('Error adding note:', error);
+      alert('Error adding note');
+    }
+
     if (noteTitle.trim() && currentNote.trim()) {
       const newNote = { title: noteTitle, content: currentNote };
       let updatedNotes;
@@ -51,7 +80,7 @@ export function Notes() {
                 className={`note-item ${index === editingIndex ? 'selected' : ''}`}
                 onClick={() => selectNote(note, index)}
               >
-                {note.title}
+                {note.title} + {index}
               </div>
             ))}
           </div>

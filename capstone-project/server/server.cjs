@@ -108,8 +108,50 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.get('/api/test', (req, res) => {
-  res.send('This is the test route!');
+app.post('/add_note', async (req, res) => {
+  const {username, noteTitle, noteContent} = req.body;
+
+  if (!username) {
+    res.status(400).send('No user information found. Please log in');
+    return;
+  }
+
+  try {
+    const addNoteQuery = "INSERT INTO note (name, description) VALUES (?, ?)";
+
+    db.query(addNoteQuery, [noteTitle, noteContent], (errAddNote, resultAddNote) => {
+
+      if (errAddNote) {
+        console.error('Error adding note:', errAddNote);
+        res.status(500).send('Error adding note');
+        return;
+      }
+
+      const noteId = resultAddNote.insertId;
+
+      const addRelationQuery =
+      `
+        INSERT INTO user_note (userId, noteId)
+        SELECT ui.userId, n.noteId
+        FROM user_info AS ui
+        JOIN note n ON n.noteId = ?
+        WHERE ui.username = ?
+      `
+
+      db.query(addRelationQuery, [noteId, username], (errAddRelation, resultAddRelation) => {
+        if (errAddRelation) {
+          console.error('Error adding relationship:', errAddRelation);
+          res.status(500).send('Error adding relationship');
+          return;
+        }
+      });
+
+      res.status(200).send("Note added successfully");
+    });
+
+  } catch (error) {
+    res.status(500).send('Error adding note: ', err);
+  }
 });
 
 app.listen(port, () => {
