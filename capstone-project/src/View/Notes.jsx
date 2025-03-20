@@ -7,30 +7,60 @@ export function Notes() {
   const [noteTitle, setNoteTitle] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
 
+  // Function to complete and save a note (keeping pin status)
   const handleCompleteNote = () => {
     if (noteTitle.trim() && currentNote.trim()) {
-      const newNote = { title: noteTitle, content: currentNote };
       let updatedNotes;
 
       if (editingIndex !== null) {
-        updatedNotes = notes.filter((_, idx) => idx !== editingIndex);
+        updatedNotes = notes.map((note, idx) =>
+          idx === editingIndex
+            ? { ...note, title: noteTitle, content: currentNote } // Keep pin status
+            : note
+        );
       } else {
-        updatedNotes = notes;
+        const newNote = { title: noteTitle, content: currentNote, pinned: false };
+        updatedNotes = [...notes, newNote]; // Add new note at the bottom
       }
 
-      setNotes([newNote, ...updatedNotes]);
+      setNotes(updatedNotes.sort((a, b) => b.pinned - a.pinned)); // Keep pinned notes at the top
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
     }
   };
 
+  // Function to create a new empty note
   const handleNewNote = () => {
     setCurrentNote('');
     setNoteTitle('');
     setEditingIndex(null);
   };
 
+  // Function to delete a selected note
+  const handleDeleteNote = () => {
+    if (editingIndex !== null) {
+      setNotes(notes.filter((_, idx) => idx !== editingIndex));
+      setCurrentNote('');
+      setNoteTitle('');
+      setEditingIndex(null);
+    }
+  };
+
+  // Function to pin or unpin a note
+  const handlePinNote = () => {
+    if (editingIndex !== null) {
+      setNotes((prevNotes) => {
+        const updatedNotes = prevNotes.map((note, idx) =>
+          idx === editingIndex ? { ...note, pinned: !note.pinned } : note
+        );
+
+        return updatedNotes.sort((a, b) => b.pinned - a.pinned);
+      });
+    }
+  };
+
+  // Function to select a note from the list
   const selectNote = (note, index) => {
     setNoteTitle(note.title);
     setCurrentNote(note.content);
@@ -41,33 +71,54 @@ export function Notes() {
     <div className='body'>
       <div className="container">
 
+        {/* Notes Sidebar */}
         <div className="notes-sidebar">
           <h3>Previous Notes</h3>
           <hr className="notes-divider" />
           <div className="notes-list">
             {notes.map((note, index) => (
-              <div
-                key={index}
-                className={`note-item ${index === editingIndex ? 'selected' : ''}`}
+              <div 
+                key={index} 
+                className={`note-item ${index === editingIndex ? 'selected' : ''}`} 
                 onClick={() => selectNote(note, index)}
               >
-                {note.title}
+                {note.title} {note.pinned && "📌"}
               </div>
             ))}
           </div>
         </div>
 
+        {/* Buttons for Creating and Deleting Notes */}
         <div className="new-note-button">
           <button className="add-note" onClick={handleNewNote}>+ New Note</button>
           <button className="complete-note" onClick={handleCompleteNote}>Complete Note</button>
+          <button 
+            className="delete-note-btn" 
+            onClick={handleDeleteNote} 
+            disabled={editingIndex === null}
+          >
+            Delete Note
+          </button>
         </div>
 
+        {/* Pin Note Button at Bottom-Right */}
+        <div className="pin-note-button-container">
+          <button 
+            className="pin-note-btn" 
+            onClick={handlePinNote} 
+            disabled={editingIndex === null}
+          >
+            {editingIndex !== null && notes[editingIndex]?.pinned ? "Unpin Note" : "Pin Note"}
+          </button>
+        </div>
+
+        {/* Notes Input Area */}
         <div className="content">
           <div className="notes-container">
             <input
               type="text"
               className="note-title"
-              placeholder="Enter This Notes Title..."
+              placeholder="Enter This Note's Title..."
               value={noteTitle}
               onChange={(e) => setNoteTitle(e.target.value)}
             />
@@ -79,6 +130,7 @@ export function Notes() {
             ></textarea>
           </div>
         </div>
+
       </div>
     </div>
   );

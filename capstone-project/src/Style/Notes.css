@@ -1,144 +1,191 @@
 /* Notes Sidebar Styles */
 .notes-sidebar {
-    width: 200px;
-    background-color: white;
-    padding: 15px;
-    position: fixed;
-    top: 10vh;
-    left: 180px; /* Align next to existing banner */
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-  }
-  
-  .new-note-button {
-    position: fixed;
-    top: 11vh;
-    right: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .add-note {
-    background-color: green;
-    color: white;
-    border: none;
-    width: 120px;
-    height: 40px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-  }
-  
-  .add-note:hover {
-    transform: scale(1.05);
-  }
-  
-  .new-note-button span {
-    margin-top: 5px;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .notes-list {
-    width: 100%;
-    flex: 1;
-    overflow-y: auto;
-  }
-  
-  /* Notes Area Styles */
-/* Notes Area Styles */
-/* Note title styles */
+  width: 200px;
+  background-color: white;
+  padding: 15px;
+  position: fixed;
+  top: 10vh;
+  left: 180px; /* Align next to existing banner */
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Fix button positioning */
+.new-note-button {
+  position: fixed;
+  top: 11vh;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10; /* Ensures buttons are clickable */
+}
+
+/* Adjust Note Buttons */
+.add-note, .complete-note, .delete-note-btn {
+  width: 120px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  border: none;
+  color: white;
+  margin-bottom: 10px; /* Ensures spacing between buttons */
+}
+
+/* Button colors */
+.add-note {
+  background-color: green;
+}
+
+.add-note:hover {
+  transform: scale(1.05);
+}
+
+.complete-note {
+  background-color: rgb(100, 149, 237);
+}
+
+.complete-note:hover {
+  background-color: rgb(70, 130, 180);
+  transform: scale(1.05);
+}
+
+.delete-note-btn {
+  background-color: red;
+}
+
+.delete-note-btn:hover {
+  background-color: darkred;
+  transform: scale(1.05);
+}
+
+.delete-note-btn:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+/* Notes List */
+.notes-list {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Adjust Notes Container */
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 270px); /* Adjust width so it doesn’t overlap the sidebar */
+  height: calc(100vh - 15vh); /* Reduced gap at the top */
+  position: absolute;
+  top: 10vh;
+  left: 250px; /* Shift right to avoid overlap with sidebar */
+  padding: 10px;
+  box-sizing: border-box;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Reduce unnecessary space in title */
 .note-title {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  
-  /* Notes container layout adjustments */
-  .notes-container {
-    display: flex;
-    flex-direction: column; /* Ensures vertical alignment of title and textarea */
-    width: calc(100% - 300px);
-    height: calc(100vh - 10vh - 15px);
-    margin: -120px auto 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    justify-content: flex-start;
-    align-items: center;
-  }
-  
-  /* Adjust textarea for alignment */
-  .notes-area {
-    width: 100%; /* Match title input width exactly */
-    height: 100%;
-    resize: none;
-    padding: 30px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    outline: none;
-    background-color: white;
-    box-sizing: border-box;
-  }
-  
-  
+  width: 75%;
+  padding: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
-  .notes-sidebar h3 {
-    margin: 0;
-    padding-bottom: 5px;
-    color: #333;
-    text-align: center;
-  }
-  
-  .notes-divider {
-    width: 80%;
-    border: 0;
-    border-top: 2px solid rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-  }
+/* Adjust textarea spacing */
+.notes-area {
+  width: 75%;
+  height: calc(100vh - 30vh);
+  resize: none;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  outline: none;
+  background-color: white;
+  box-sizing: border-box;
+}
 
-  .complete-note {
-    background-color: rgb(100, 149, 237); /* Cornflower Blue */
-    color: white;
-    border: none;
-    width: 120px;
-    height: 40px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-  }
-  
-  .complete-note:hover {
-    background-color: rgb(70, 130, 180); /* Slightly darker blue */
-    transform: scale(1.05);
-  }
-  
-  .note-item {
+/* Sidebar Header */
+.notes-sidebar h3 {
+  margin: 0;
+  padding-bottom: 5px;
+  color: #333;
+  text-align: center;
+}
+
+/* Divider */
+.notes-divider {
+  width: 80%;
+  border: 0;
+  border-top: 2px solid rgba(0,0,0,0.1);
+  margin-bottom: 15px;
+}
+
+/* Notes List Item */
+.note-item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   cursor: pointer;
   padding: 5px;
+  width: 100%;
 }
 
-.note-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+/* Delete Note Icon */
+.delete-note {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
 }
 
-  
+.delete-note:hover {
+  color: darkred;
+}
+
+/* Pin Note Button at Bottom-Right */
+.pin-note-button-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.pin-note-btn {
+  background-color: gold;
+  color: black;
+  border: none;
+  width: 140px;
+  height: 45px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.pin-note-btn:hover {
+  background-color: darkgoldenrod;
+  transform: scale(1.05);
+}
+
+.pin-note-btn:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
