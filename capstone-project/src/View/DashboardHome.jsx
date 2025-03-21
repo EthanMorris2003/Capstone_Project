@@ -12,10 +12,7 @@ export function DashboardHome() {
       <div className="image-container">
         {[{ icon: notes, text: "Manage your notes efficiently." },
         { icon: calendar, text: "Keep track of your schedule." },
-        { icon: customer, text: "Manage your customer interactions." },
-        { icon: bell, text: "Notifications" },
-        { icon: placeholder, text: "Placeholder" },
-        { icon: placeholder2, text: "Placeholder" }].map((item, index) => (
+        { icon: customer, text: "Manage your customer interactions." },].map((item, index) => (
           <div className="icon-box" key={index}>
             <img src={item.icon} alt="Icon" className="svg-icon" />
             <p>{item.text}</p>
