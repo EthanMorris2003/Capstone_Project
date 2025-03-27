@@ -4,12 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
   
   const handleSignUp = async () => {
-    if (username == '' || password == ''){
+    if (username == '' || password == '' || email == '' || confirmPassword == ''){
       alert("All fields need to be filled");
       return;
     }
@@ -21,7 +22,8 @@ function Signup() {
     try {
       const response = await axios.post('http://localhost:5000/signup', {
         username,
-        password
+        password,
+        email
       });
       alert(response.data);
       navigate("/login");
@@ -45,6 +47,16 @@ function Signup() {
               className="inputBoxUser"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+            />
+          </form>
+          <div className="logText">Enter Email</div>
+          <form>
+            <input
+              type="email"
+              placeholder="Email"
+              className="inputBoxEmail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </form>
           <div className="logText">Password</div>

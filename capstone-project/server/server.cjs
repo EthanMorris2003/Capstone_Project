@@ -48,7 +48,7 @@ app.post('/signup', async (req, res) => {
   try {
     const hashedPassword = await hashPassword(password);
 
-    const query = 'INSERT INTO user_info (username, password) VALUES (?, AES_ENCRYPT(?, ?))';
+    const query = 'INSERT INTO user_info (username, password, email) VALUES (?, AES_ENCRYPT(?, ?))';
     db.query(query, [username, password, secretKey], (err, result) => {
       if (err) {
         console.error('Error inserting user:', err);
