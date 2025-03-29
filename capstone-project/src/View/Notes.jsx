@@ -1,5 +1,13 @@
 import { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import logout from 'capstone-project/src/Assets/logout.svg';
+
+// Register fonts, sizes, colors
+import Quill from 'quill';
+const Font = Quill.import('formats/font');
+Font.whitelist = ['sans', 'serif', 'monospace'];
+Quill.register(Font, true);
 
 export function Notes() {
   const [notes, setNotes] = useState([]);
@@ -7,7 +15,6 @@ export function Notes() {
   const [noteTitle, setNoteTitle] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
 
-  // Function to complete and save a note (keeping pin status)
   const handleCompleteNote = () => {
     if (noteTitle.trim() && currentNote.trim()) {
       let updatedNotes;
@@ -15,29 +22,27 @@ export function Notes() {
       if (editingIndex !== null) {
         updatedNotes = notes.map((note, idx) =>
           idx === editingIndex
-            ? { ...note, title: noteTitle, content: currentNote } // Keep pin status
+            ? { ...note, title: noteTitle, content: currentNote }
             : note
         );
       } else {
         const newNote = { title: noteTitle, content: currentNote, pinned: false };
-        updatedNotes = [...notes, newNote]; // Add new note at the bottom
+        updatedNotes = [...notes, newNote];
       }
 
-      setNotes(updatedNotes.sort((a, b) => b.pinned - a.pinned)); // Keep pinned notes at the top
+      setNotes(updatedNotes.sort((a, b) => b.pinned - a.pinned));
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
     }
   };
 
-  // Function to create a new empty note
   const handleNewNote = () => {
     setCurrentNote('');
     setNoteTitle('');
     setEditingIndex(null);
   };
 
-  // Function to delete a selected note
   const handleDeleteNote = () => {
     if (editingIndex !== null) {
       setNotes(notes.filter((_, idx) => idx !== editingIndex));
@@ -47,25 +52,32 @@ export function Notes() {
     }
   };
 
-  // Function to pin or unpin a note
   const handlePinNote = () => {
     if (editingIndex !== null) {
       setNotes((prevNotes) => {
         const updatedNotes = prevNotes.map((note, idx) =>
           idx === editingIndex ? { ...note, pinned: !note.pinned } : note
         );
-
         return updatedNotes.sort((a, b) => b.pinned - a.pinned);
       });
     }
   };
 
-  // Function to select a note from the list
   const selectNote = (note, index) => {
     setNoteTitle(note.title);
     setCurrentNote(note.content);
     setEditingIndex(index);
   };
+
+  const toolbarOptions = [
+    [{ 'font': Font.whitelist }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    ['bold', 'italic', 'underline'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['link', 'image'],
+    ['clean']
+  ];
 
   return (
     <div className='body'>
@@ -77,9 +89,9 @@ export function Notes() {
           <hr className="notes-divider" />
           <div className="notes-list">
             {notes.map((note, index) => (
-              <div 
-                key={index} 
-                className={`note-item ${index === editingIndex ? 'selected' : ''}`} 
+              <div
+                key={index}
+                className={`note-item ${index === editingIndex ? 'selected' : ''}`}
                 onClick={() => selectNote(note, index)}
               >
                 {note.title} {note.pinned && "📌"}
@@ -88,31 +100,30 @@ export function Notes() {
           </div>
         </div>
 
-        {/* Buttons for Creating and Deleting Notes */}
+        {/* Buttons */}
         <div className="new-note-button">
           <button className="add-note" onClick={handleNewNote}>+ New Note</button>
           <button className="complete-note" onClick={handleCompleteNote}>Complete Note</button>
-          <button 
-            className="delete-note-btn" 
-            onClick={handleDeleteNote} 
+          <button
+            className="delete-note-btn"
+            onClick={handleDeleteNote}
             disabled={editingIndex === null}
           >
             Delete Note
           </button>
         </div>
 
-        {/* Pin Note Button at Bottom-Right */}
         <div className="pin-note-button-container">
-          <button 
-            className="pin-note-btn" 
-            onClick={handlePinNote} 
+          <button
+            className="pin-note-btn"
+            onClick={handlePinNote}
             disabled={editingIndex === null}
           >
             {editingIndex !== null && notes[editingIndex]?.pinned ? "Unpin Note" : "Pin Note"}
           </button>
         </div>
 
-        {/* Notes Input Area */}
+        {/* Note Input Area */}
         <div className="content">
           <div className="notes-container">
             <input
@@ -122,12 +133,16 @@ export function Notes() {
               value={noteTitle}
               onChange={(e) => setNoteTitle(e.target.value)}
             />
-            <textarea
-              className="notes-area"
-              placeholder="Start typing your note here..."
+
+            {/* Rich Text Editor */}
+            <ReactQuill
               value={currentNote}
-              onChange={(e) => setCurrentNote(e.target.value)}
-            ></textarea>
+              onChange={setCurrentNote}
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              className="rich-editor"
+              placeholder="Start typing your note here..."
+            />
           </div>
         </div>
 
