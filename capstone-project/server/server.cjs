@@ -155,7 +155,7 @@ app.post('/add_note', async (req, res) => {
 });
 
 app.get('/get_note', async (req, res) => {
-  const {username} = req.body;
+  const {username} = req.query;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -164,27 +164,27 @@ app.get('/get_note', async (req, res) => {
 
   try {
     const getNoteQuery = 
-      `SELECT n.name, n.description FROM note as n
+      `SELECT n.noteId, n.name, n.description FROM note as n
       JOIN user_note AS un ON n.noteId = un.noteId
       WHERE un.userId = (
-	      SELECT userId from user_info
-        WHERE username = ?
+	    SELECT userId from user_info
+      WHERE username = ?
       )`
 
     db.query(getNoteQuery, [username], (errGetNote, getNoteResult) => {
       if (errGetNote) {
-        console.error('Error retrieving notes:', errAddRelation);
+        console.error('Error retrieving notes:', errGetNote);
         res.status(500).send('Error retrieving notes');
         return;
       }
 
       return res.status(200).send({
-        data: getNoteResult 
+        data: getNoteResult
       });
     });  
 
   } catch (error) {
-    res.status(500).send('Error retrieving notes: ', err);
+    res.status(500).send('Error retrieving notes: ', error);
   }
 });
 
