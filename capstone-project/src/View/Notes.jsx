@@ -15,8 +15,6 @@ export function Notes() {
     selectNote,
   } = useNotesViewModel();
 
-  console.log(notes);
-
   return (
     <div className="body">
       <div className="container">

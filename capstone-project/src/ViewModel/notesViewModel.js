@@ -25,7 +25,7 @@ export const useNotesViewModel = () => {
     if (username) {
       getAllNote();
     }
-  }, [username]);
+  }, [username, notes]);
 
   const handleCompleteNote = async () => {
     if (noteTitle === '' || currentNote === '') {
@@ -33,8 +33,8 @@ export const useNotesViewModel = () => {
       return;
     }
 
-    const success = await addNote(username, noteTitle, currentNote);
-    if (success) {
+    const result = await addNote(username, noteTitle, currentNote);
+    if (result) {
       alert('Note added successfully');
     } else {
       alert('Error adding note');
