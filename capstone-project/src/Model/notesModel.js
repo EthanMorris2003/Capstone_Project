@@ -5,7 +5,6 @@ export const getNote = async (username) => {
     const response = await axios.get('http://localhost:5000/get_note', {
       params: {username}
     });
-    console.log(response)
     return response.data;
   } catch (error) {
     console.error('Error retrieving notes:', error);

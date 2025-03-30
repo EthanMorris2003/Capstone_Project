@@ -88,9 +88,10 @@ app.post('/login', async (req, res) => {
         const isMatch = secureCompare(password, decryptedPassword);
         if (isMatch) {
           const token = jwt.sign({
-            userId: user.userId,
             username: user.username
-          }, jwtKey);
+          }, jwtKey,  {
+            expiresIn: '30m'
+          });
 
           return res.status(200).send({
             message: 'User authenticated successfully',
