@@ -88,9 +88,10 @@ app.post('/login', async (req, res) => {
         const isMatch = secureCompare(password, decryptedPassword);
         if (isMatch) {
           const token = jwt.sign({
-            userId: user.userId,
             username: user.username
-          }, jwtKey);
+          }, jwtKey,  {
+            expiresIn: '30m'
+          });
 
           return res.status(200).send({
             message: 'User authenticated successfully',
@@ -146,11 +147,45 @@ app.post('/add_note', async (req, res) => {
         }
       });
 
-      res.status(200).send("Note added successfully");
+      res.status(201).send("Note added successfully");
     });
 
   } catch (error) {
     res.status(500).send('Error adding note: ', err);
+  }
+});
+
+app.get('/get_note', async (req, res) => {
+  const {username} = req.query;
+
+  if (!username) {
+    res.status(400).send('No user information found. Please log in');
+    return;
+  }
+
+  try {
+    const getNoteQuery = 
+      `SELECT n.noteId, n.name, n.description FROM note as n
+      JOIN user_note AS un ON n.noteId = un.noteId
+      WHERE un.userId = (
+	    SELECT userId from user_info
+      WHERE username = ?
+      )`
+
+    db.query(getNoteQuery, [username], (errGetNote, getNoteResult) => {
+      if (errGetNote) {
+        console.error('Error retrieving notes:', errGetNote);
+        res.status(500).send('Error retrieving notes');
+        return;
+      }
+
+      return res.status(200).send({
+        data: getNoteResult
+      });
+    });  
+
+  } catch (error) {
+    res.status(500).send('Error retrieving notes: ', error);
   }
 });
 
