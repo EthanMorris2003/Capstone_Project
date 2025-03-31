@@ -58,6 +58,9 @@ app.post('/signup', async (req, res) => {
       res.status(200).send('User signed up successfully');
     });
   } catch (error) {
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).send('Username already exists');
+    }
     console.error('Error hashing password:', error);
     res.status(500).send('Error signing up');
   }
@@ -89,7 +92,7 @@ app.post('/login', async (req, res) => {
         if (isMatch) {
           const token = jwt.sign({
             username: user.username
-          }, jwtKey,  {
+          }, jwtKey, {
             expiresIn: '30m'
           });
 
@@ -110,7 +113,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/add_note', async (req, res) => {
-  const {username, noteTitle, noteContent} = req.body;
+  const { username, noteTitle, noteContent } = req.body;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -131,7 +134,7 @@ app.post('/add_note', async (req, res) => {
       const noteId = resultAddNote.insertId;
 
       const addRelationQuery =
-      `
+        `
         INSERT INTO user_note (userId, noteId)
         SELECT ui.userId, n.noteId
         FROM user_info AS ui
@@ -156,7 +159,7 @@ app.post('/add_note', async (req, res) => {
 });
 
 app.get('/get_note', async (req, res) => {
-  const {username} = req.query;
+  const { username } = req.query;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -164,7 +167,7 @@ app.get('/get_note', async (req, res) => {
   }
 
   try {
-    const getNoteQuery = 
+    const getNoteQuery =
       `SELECT n.noteId, n.name, n.description FROM note as n
       JOIN user_note AS un ON n.noteId = un.noteId
       WHERE un.userId = (
@@ -182,11 +185,39 @@ app.get('/get_note', async (req, res) => {
       return res.status(200).send({
         data: getNoteResult
       });
-    });  
+    });
 
   } catch (error) {
     res.status(500).send('Error retrieving notes: ', error);
   }
+});
+
+app.post('/delete_note', async (req, res) => {
+  const { noteId } = req.body;
+
+  // ON DELETE CASCADE is in place to delete user_note relation when a note is deleted.
+  try {
+    const deleteNoteQuery =
+      `DELETE FROM note WHERE noteId = ?`
+
+    db.query(deleteNoteQuery, [noteId], (errDeleteNote, deleteNoteResult) => {
+      if (errDeleteNote) {
+        console.error('Error retrieving notes:', errDeleteNote);
+        res.status(500).send('Error retrieving notes');
+        return;
+      }
+
+      if (deleteNoteResult.affectedRows === 0) {
+        return res.status(404).send('Note not found');
+      }
+
+      res.status(201).send("Note deleted successfully");
+    });
+  }
+  catch (error) {
+    res.status(500).send('Error deleting note: ', error);
+  }
+
 });
 
 app.listen(port, () => {

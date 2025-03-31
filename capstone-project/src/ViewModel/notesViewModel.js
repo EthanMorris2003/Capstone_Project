@@ -63,13 +63,17 @@ export const useNotesViewModel = () => {
     setEditingIndex(null);
   };
 
-  const handleDeleteNote = () => {
-    if (editingIndex !== null) {
-      const updatedNotes = deleteNote(notes, editingIndex);
+  const handleDeleteNote = async () => {
+    console.log(editingIndex);
+    const result = await deleteNote(editingIndex);
+    if (result) {
+      const updatedNotes = notes.filter((_, idx) => idx !== editingIndex);
       setNotes(updatedNotes);
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
+    } else {
+      alert('Error deleting note');
     }
   };
 

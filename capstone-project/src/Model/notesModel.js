@@ -29,8 +29,20 @@ export const addNote = async (username, noteTitle, noteContent) => {
   }
 };
 
-export const deleteNote = (notes, editingIndex) => {
-  return notes.filter((_, idx) => idx !== editingIndex);
+export const deleteNote = async (editingIndex) => {
+  try {
+    const response = await axios.post('http://localhost:5000/delete_note', {
+      noteId: editingIndex
+    });
+    if (response.data === "Note deleted successfully") {
+      alert(response.data);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Error adding note:', error);
+    return false;
+  }
 };
 
 export const updateNote = (notes, editingIndex, newTitle, newContent) => {
