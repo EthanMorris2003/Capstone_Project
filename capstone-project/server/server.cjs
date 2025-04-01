@@ -24,9 +24,9 @@ const db = mysql.createConnection({
   port: process.env.DB_PORT
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
+db.connect((error) => {
+  if (error) {
+    console.error('Error connecting to MySQL:', error);
     return;
   }
   console.log('Connected to MySQL databaste');
@@ -108,12 +108,12 @@ app.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).send('Error logging in: ', err);
+    res.status(500).send('Error logging in: ', error);
   }
 });
 
 app.post('/add_note', async (req, res) => {
-  const { username, noteTitle, noteContent } = req.body;
+  const {noteId, username, noteTitle, noteContent } = req.body;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -121,20 +121,47 @@ app.post('/add_note', async (req, res) => {
   }
 
   try {
-    const addNoteQuery = "INSERT INTO note (name, description) VALUES (?, ?)";
+    // If there is a note selected => modify
+    if (noteId != null) {
+      const modifyNoteQuery = 
+      `
+      UPDATE note
+      SET name = ?, description = ?
+      WHERE noteId = ?
+      `
 
-    db.query(addNoteQuery, [noteTitle, noteContent], (errAddNote, resultAddNote) => {
+      db.query(modifyNoteQuery, [noteTitle, noteContent, noteId], (errModifyNote, resultModifyNote) => {
 
-      if (errAddNote) {
-        console.error('Error adding note:', errAddNote);
-        res.status(500).send('Error adding note');
-        return;
-      }
+        if (errModifyNote) {
+          console.error('Error updating note:', errModifyNote);
+          res.status(500).send('Error updating note');
+          return;
+        }
 
-      const noteId = resultAddNote.insertId;
+        if (resultModifyNote.affectedRows === 0) {
+          return res.status(404).send('Note not found');
+        }
 
-      const addRelationQuery =
-        `
+        res.status(200).send("Note modified successfully");
+      });
+
+    } 
+    // If it's a brand new note => add
+    else {
+      const addNoteQuery = "INSERT INTO note (name, description) VALUES (?, ?)";
+
+      db.query(addNoteQuery, [noteTitle, noteContent], (errAddNote, resultAddNote) => {
+
+        if (errAddNote) {
+          console.error('Error adding note:', errAddNote);
+          res.status(500).send('Error adding note');
+          return;
+        }
+
+        const newnoteId = resultAddNote.insertId;
+
+        const addRelationQuery =
+          `
         INSERT INTO user_note (userId, noteId)
         SELECT ui.userId, n.noteId
         FROM user_info AS ui
@@ -142,19 +169,20 @@ app.post('/add_note', async (req, res) => {
         WHERE ui.username = ?
       `
 
-      db.query(addRelationQuery, [noteId, username], (errAddRelation, resultAddRelation) => {
-        if (errAddRelation) {
-          console.error('Error adding relationship:', errAddRelation);
-          res.status(500).send('Error adding relationship');
-          return;
-        }
-      });
+        db.query(addRelationQuery, [newnoteId, username], (errAddRelation, resultAddRelation) => {
+          if (errAddRelation) {
+            console.error('Error adding relationship:', errAddRelation);
+            res.status(500).send('Error adding relationship');
+            return;
+          }
+        });
 
-      res.status(201).send("Note added successfully");
-    });
+        res.status(201).send("Note added successfully");
+      });
+    }
 
   } catch (error) {
-    res.status(500).send('Error adding note: ', err);
+    res.status(500).send('Error adding note: ', error);
   }
 });
 
