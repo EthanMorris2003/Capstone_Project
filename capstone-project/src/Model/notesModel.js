@@ -13,7 +13,6 @@ export const getNote = async (username) => {
 };
 
 export const addNote = async (editingIndex, username, noteTitle, noteContent) => {
-  console.log(editingIndex);
   try {
     const response = await axios.post('http://localhost:5000/add_note', {
       noteId: editingIndex,

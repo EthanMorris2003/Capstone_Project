@@ -33,7 +33,6 @@ export const useNotesViewModel = () => {
       return;
     }
 
-    console.log(editingIndex);
     const result = await addNote(editingIndex, username, noteTitle, currentNote);
     if (result) {
       alert('Success!');
