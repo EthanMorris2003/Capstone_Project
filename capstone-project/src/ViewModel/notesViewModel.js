@@ -33,9 +33,10 @@ export const useNotesViewModel = () => {
       return;
     }
 
-    const result = await addNote(username, noteTitle, currentNote);
+    console.log(editingIndex);
+    const result = await addNote(editingIndex, username, noteTitle, currentNote);
     if (result) {
-      alert('Note added successfully');
+      alert('Success!');
     } else {
       alert('Error adding note');
     }
@@ -64,7 +65,6 @@ export const useNotesViewModel = () => {
   };
 
   const handleDeleteNote = async () => {
-    console.log(editingIndex);
     const result = await deleteNote(editingIndex);
     if (result) {
       const updatedNotes = notes.filter((_, idx) => idx !== editingIndex);

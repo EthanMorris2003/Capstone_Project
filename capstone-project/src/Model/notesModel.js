@@ -12,14 +12,16 @@ export const getNote = async (username) => {
   }
 };
 
-export const addNote = async (username, noteTitle, noteContent) => {
+export const addNote = async (editingIndex, username, noteTitle, noteContent) => {
+  console.log(editingIndex);
   try {
     const response = await axios.post('http://localhost:5000/add_note', {
-      username,
-      noteTitle,
-      noteContent,
+      noteId: editingIndex,
+      username: username,
+      noteTitle: noteTitle,
+      noteContent: noteContent,
     });
-    if (response.data === "Note added successfully") {
+    if (response.data === "Note added successfully" || response.data === "Note modified successfully") {
       return true;
     }
     return false;
