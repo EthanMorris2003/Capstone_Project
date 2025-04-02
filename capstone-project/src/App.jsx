@@ -4,7 +4,7 @@ import Dashboard from './ViewManager/dashboard';
 import Login from './View/login';
 import Home from './View/homepage';
 import DashboardHome from './View/DashboardHome';
-import Signup from './View/signup';
+import Signup from './View/SignUp';
 import Notes from './View/Notes';
 import Calendar from './View/Calendar';
 import DashboardMain from './ViewManager/dashboard';

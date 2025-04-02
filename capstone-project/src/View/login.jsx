@@ -41,7 +41,7 @@ function Login() {
           <form>
             <input
               placeholder="Username"
-              className="inputBoxUser"
+              className="inputBox"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -51,7 +51,7 @@ function Login() {
             <input
               type="password"
               placeholder="Password"
-              className="inputBoxPass"
+              className="inputBox"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

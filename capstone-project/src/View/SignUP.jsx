@@ -1,38 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
+import { signupViewModel } from '../ViewModel/signupViewModel';
 
 function Signup() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const navigate = useNavigate();
-  
-  const handleSignUp = async () => {
-    if (username == '' || password == ''){
-      alert("All fields need to be filled");
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert("Passwords don't match");
-      return;
-    }
-
-    try {
-      const response = await axios.post('http://localhost:5000/signup', {
-        username,
-        password
-      });
-      alert(response.data);
-      navigate("/login");
-    } catch (error) {
-      console.error('Error signing up:', error);
-      alert('Error signing up');
-    }
-  };
+  const {
+    username,
+    password,
+    confirmPassword,
+    firstName,
+    lastName,
+    email,
+    setUsername,
+    setPassword,
+    setConfirmPassword,
+    setFirstName,
+    setLastName,
+    setEmail,
+    handleSignUp
+  } = signupViewModel();
   
   return (
     <div className="backgroundContainer">

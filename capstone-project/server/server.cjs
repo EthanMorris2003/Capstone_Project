@@ -43,15 +43,21 @@ async function hashPassword(password) {
 
 //Sign up Function
 app.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, firstName, lastName, email } = req.body;
 
   try {
     const hashedPassword = await hashPassword(password);
 
-    const query = 'INSERT INTO user_info (username, password) VALUES (?, AES_ENCRYPT(?, ?))';
-    db.query(query, [username, password, secretKey], (err, result) => {
+    const query = 'INSERT INTO user_info (username, password, email, firstName, lastName) VALUES (?, AES_ENCRYPT(?, ?), ?, ?, ?)';
+    db.query(query, [username, password, secretKey, email, firstName, lastName], (err, result) => {
       if (err) {
         console.error('Error inserting user:', err);
+
+        // Username or email already exists
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).send('Username or email already exists');
+        }
+
         res.status(500).send('Error signing up');
         return;
       }
@@ -61,8 +67,7 @@ app.post('/signup', async (req, res) => {
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.status(400).send('Username already exists');
     }
-    console.error('Error hashing password:', error);
-    res.status(500).send('Error signing up');
+    res.status(500).send('Error signing up: ', error);
   }
 });
 
