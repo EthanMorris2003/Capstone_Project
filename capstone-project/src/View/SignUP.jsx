@@ -6,6 +6,9 @@ function Signup() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const navigate = useNavigate();
   
   const handleSignUp = async () => {
@@ -42,7 +45,7 @@ function Signup() {
           <form>
             <input
               placeholder="Username"
-              className="inputBoxUser"
+              className={username ? "inputBoxFilled" : "inputBox"} 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -50,9 +53,9 @@ function Signup() {
           <div className="logText">Password</div>
           <form>
             <input
-              type="password"
+              type='password'
               placeholder="Password"
-              className="inputBoxPass"
+              className={password ? "inputBoxFilled" : "inputBox"} 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -60,11 +63,39 @@ function Signup() {
           <div className="logText">Confirm Password</div>
           <form>
             <input
-              type="password"
+              type='password'
               placeholder="Confirm Password"
-              className="inputBoxPass"
+              className={confirmPassword ? "inputBoxFilled" : "inputBox"} 
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </form>
+          <div className="logText">First Name</div>
+          <form>
+            <input
+              placeholder="First Name"
+              className={firstName ? "inputBoxFilled" : "inputBox"} 
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </form>
+          <div className="logText">Last Name</div>
+          <form>
+            <input
+              placeholder="Last Name"
+              className={lastName ? "inputBoxFilled" : "inputBox"} 
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </form>
+          <div className="logText">Email</div>
+          <form>
+            <input
+              type='email'
+              placeholder="Email"
+              className={email ? "inputBoxFilled" : "inputBox"} 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </form>
           <button className="createAccountButtonSignUp" onClick={handleSignUp}>Sign Up</button>
