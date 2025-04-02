@@ -2,6 +2,7 @@ import { useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import logout from 'capstone-project/src/Assets/logout.svg';
+import { useNotesViewModel } from '../ViewModel/notesViewModel';
 
 // Register fonts, sizes, colors
 import Quill from 'quill';
@@ -10,64 +11,19 @@ Font.whitelist = ['sans', 'serif', 'monospace'];
 Quill.register(Font, true);
 
 export function Notes() {
-  const [notes, setNotes] = useState([]);
-  const [currentNote, setCurrentNote] = useState('');
-  const [noteTitle, setNoteTitle] = useState('');
-  const [editingIndex, setEditingIndex] = useState(null);
-
-  const handleCompleteNote = () => {
-    if (noteTitle.trim() && currentNote.trim()) {
-      let updatedNotes;
-
-      if (editingIndex !== null) {
-        updatedNotes = notes.map((note, idx) =>
-          idx === editingIndex
-            ? { ...note, title: noteTitle, content: currentNote }
-            : note
-        );
-      } else {
-        const newNote = { title: noteTitle, content: currentNote, pinned: false };
-        updatedNotes = [...notes, newNote];
-      }
-
-      setNotes(updatedNotes.sort((a, b) => b.pinned - a.pinned));
-      setCurrentNote('');
-      setNoteTitle('');
-      setEditingIndex(null);
-    }
-  };
-
-  const handleNewNote = () => {
-    setCurrentNote('');
-    setNoteTitle('');
-    setEditingIndex(null);
-  };
-
-  const handleDeleteNote = () => {
-    if (editingIndex !== null) {
-      setNotes(notes.filter((_, idx) => idx !== editingIndex));
-      setCurrentNote('');
-      setNoteTitle('');
-      setEditingIndex(null);
-    }
-  };
-
-  const handlePinNote = () => {
-    if (editingIndex !== null) {
-      setNotes((prevNotes) => {
-        const updatedNotes = prevNotes.map((note, idx) =>
-          idx === editingIndex ? { ...note, pinned: !note.pinned } : note
-        );
-        return updatedNotes.sort((a, b) => b.pinned - a.pinned);
-      });
-    }
-  };
-
-  const selectNote = (note, index) => {
-    setNoteTitle(note.title);
-    setCurrentNote(note.content);
-    setEditingIndex(index);
-  };
+  const {
+    notes,
+    currentNote,
+    noteTitle,
+    editingIndex,
+    setNoteTitle,
+    setCurrentNote,
+    handleCompleteNote,
+    handleNewNote,
+    handleDeleteNote,
+    handlePinNote,
+    selectNote,
+  } = useNotesViewModel();
 
   const toolbarOptions = [
     [{ 'font': Font.whitelist }],
@@ -80,21 +36,19 @@ export function Notes() {
   ];
 
   return (
-    <div className='body'>
+    <div className="body">
       <div className="container">
-
-        {/* Notes Sidebar */}
         <div className="notes-sidebar">
           <h3>Previous Notes</h3>
           <hr className="notes-divider" />
           <div className="notes-list">
-            {notes.map((note, index) => (
+            {notes.map((note) => (
               <div
-                key={index}
-                className={`note-item ${index === editingIndex ? 'selected' : ''}`}
-                onClick={() => selectNote(note, index)}
+                key={note.noteId}
+                className={`note-item ${note.noteId === editingIndex ? 'selected' : ''}`}
+                onClick={() => selectNote(note, note.noteId)}
               >
-                {note.title} {note.pinned && "📌"}
+                {note.name} {note.pinned && "📌"}
               </div>
             ))}
           </div>
@@ -142,10 +96,10 @@ export function Notes() {
               modules={{ toolbar: toolbarOptions }}
               className="rich-editor"
               placeholder="Start typing your note here..."
+              onChange={(e) => setCurrentNote(e.target.value)}
             />
           </div>
         </div>
-
       </div>
     </div>
   );

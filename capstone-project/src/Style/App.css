@@ -46,6 +46,25 @@ body, html {
   gap: 15px;
 }
 
+/* a, .link {
+  text-decoration: none;
+} */
+
+.username {
+  background-color: transparent;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: 'Merriweather', serif;
+  color: bisque;
+  text-decoration: none;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.username:hover {
+  color: lightblue;
+}
+
 .logout-button {
   background: none;
   border: none;

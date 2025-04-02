@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import notes from 'capstone-project/src/Assets/notes.svg';
-import calendar from 'capstone-project/src/Assets/calender.svg';
-import customer from 'capstone-project/src/Assets/customer.svg';
-import bell from 'capstone-project/src/Assets/bell.svg';
-import placeholder from 'capstone-project/src/Assets/placeholder.svg';
-import placeholder2 from 'capstone-project/src/Assets/placeholder2.svg';
+import { jwtDecode } from "jwt-decode";
 import logout from 'capstone-project/src/Assets/logout.svg';
 
 export function Dashboard() {
-  const [activeSubBanner, setActiveSubBanner] = useState(null);
+  const [activeSubBanner, setActiveSubBanner] = useState(1);
 
   const navigate = useNavigate();
 
@@ -19,19 +14,44 @@ export function Dashboard() {
     3: "Calendar"
   };
 
+  const token = localStorage.getItem('authToken');
+  let userInfo;
+  if (token) {
+    try {
+      userInfo = jwtDecode(token);
+    } catch (error) {
+      console.error('Invalid token:', error);
+    }
+  }
+
   const handleClick = (id) => {
+    const isAuthenticated = localStorage.getItem('authToken');
+    
     switch (id) {
       case 1:
         navigate('/dashboard');
+        setActiveSubBanner(id);
         break;
       case 2:
-        navigate('/dashboard/notes');
+        if (isAuthenticated) {
+          navigate('/dashboard/notes');
+          setActiveSubBanner(id);
+        } else {
+          alert("Please log in to access this feature.");
+        }
         break;
       case 3:
-        navigate('/dashboard/calendar');
+        if (isAuthenticated) {
+          navigate('/dashboard/calendar');
+          setActiveSubBanner(id);
+        } else {
+          alert("Please log in to access this feature.");
+        }
+        break;
+      default:
         break;
     }
-    setActiveSubBanner(id);
+
   };
 
   return (
@@ -41,11 +61,18 @@ export function Dashboard() {
         <h1 className="header-title">DebtNext Home Dashboard</h1>
 
         <div className="header-icons">
-          <Link to="/login">
-            <button className="logout-button">
-              <img src={logout} alt="Logout Icon" className="logout-icon" />
-            </button>
-          </Link>
+            {(token && userInfo)?
+              (<a className='username' onClick={() => {
+                  localStorage.removeItem('authToken')
+                  navigate('/login');
+                }}>
+                {userInfo.username}
+              </a>) :
+            (<Link to="/login">
+              <button className="logout-button">
+                <img src={logout} alt="Logout Icon" className="logout-icon" />
+              </button>
+            </Link>)}
         </div>
       </div>
 
