@@ -1,4 +1,14 @@
+import { useState } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import logout from 'capstone-project/src/Assets/logout.svg';
 import { useNotesViewModel } from '../ViewModel/notesViewModel';
+
+// Register fonts, sizes, colors
+import Quill from 'quill';
+const Font = Quill.import('formats/font');
+Font.whitelist = ['sans', 'serif', 'monospace'];
+Quill.register(Font, true);
 
 export function Notes() {
   const {
@@ -14,6 +24,16 @@ export function Notes() {
     handlePinNote,
     selectNote,
   } = useNotesViewModel();
+
+  const toolbarOptions = [
+    [{ 'font': Font.whitelist }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    ['bold', 'italic', 'underline'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['link', 'image'],
+    ['clean']
+  ];
 
   return (
     <div className="body">
@@ -34,6 +54,7 @@ export function Notes() {
           </div>
         </div>
 
+        {/* Buttons */}
         <div className="new-note-button">
           <button className="add-note" onClick={handleNewNote}>+ New Note</button>
           <button className="complete-note" onClick={handleCompleteNote}>Complete Note</button>
@@ -56,6 +77,7 @@ export function Notes() {
           </button>
         </div>
 
+        {/* Note Input Area */}
         <div className="content">
           <div className="notes-container">
             <input
@@ -65,10 +87,15 @@ export function Notes() {
               value={noteTitle}
               onChange={(e) => setNoteTitle(e.target.value)}
             />
-            <textarea
-              className="notes-area"
-              placeholder="Start typing your note here..."
+
+            {/* Rich Text Editor */}
+            <ReactQuill
               value={currentNote}
+              onChange={setCurrentNote}
+              theme="snow"
+              modules={{ toolbar: toolbarOptions }}
+              className="rich-editor"
+              placeholder="Start typing your note here..."
               onChange={(e) => setCurrentNote(e.target.value)}
             />
           </div>
