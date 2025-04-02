@@ -1,67 +1,8 @@
-/* 
-import { useState } from 'react';
-import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import '../Style/calendar.css'; // Ensure this import is present
-import logout from 'capstone-project/src/Assets/logout.svg';
-
-const localizer = momentLocalizer(moment);
-
-export function Calendar() {
-  const [events, setEvents] = useState([]);
-
-  // Handle adding new events when a user clicks on the calendar
-  const handleSelectSlot = ({ start, end }) => {
-    const title = prompt('Enter Event Title:');
-    if (title) {
-      setEvents([...events, { title, start, end }]);
-    }
-  };
-
-  // Handle deleting an event when clicked
-  const handleSelectEvent = (eventToDelete) => {
-    const confirmDelete = window.confirm(`Delete event: "${eventToDelete.title}"?`);
-    if (confirmDelete) {
-      setEvents((prevEvents) =>
-        prevEvents.filter(
-          (event) =>
-            event.title !== eventToDelete.title ||
-            event.start.getTime() !== eventToDelete.start.getTime() ||
-            event.end.getTime() !== eventToDelete.end.getTime()
-        )
-      );
-    }
-  };
-
-  return (
-    <div className="content">
-      <div className="calendar-wrapper">
-        <BigCalendar
-          localizer={localizer}
-          events={events}
-          startAccessor="start"
-          endAccessor="end"
-          selectable
-          onSelectSlot={handleSelectSlot} // Enables clicking to add events
-          onSelectEvent={handleSelectEvent} // Enables deleting events
-          defaultView={Views.WEEK} // Set default view to WEEK
-          style={{ height: '100%', width: '100%' }}
-        />
-      </div>
-    </div>
-  );
-}
-
-export default Calendar;
-*/
-
-import { useState } from 'react';
 import { Calendar as BigCalendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../Style/calendar.css';
-import logout from 'capstone-project/src/Assets/logout.svg';
+import { calendarViewModel } from '../ViewModel/calendarViewModel';
 
 const localizer = momentLocalizer(moment);
 const colorOptions = ['#FF5733', '#3498DB', '#2ECC71', '#F1C40F']; // Orange, Blue, Green, Yellow
@@ -70,47 +11,14 @@ const colorOptions = ['#FF5733', '#3498DB', '#2ECC71', '#F1C40F']; // Orange, Bl
 const staffList = ['John Doe', 'Jane Smith', 'Michael Brown', 'Emily Davis'];
 
 export function Calendar() {
-  const [events, setEvents] = useState([]);
-  const [modalData, setModalData] = useState(null);
-
-  // Open modal near click position
-  const handleSelectSlot = ({ start, end, action, box }) => {
-    if (action === 'select') {
-      setModalData({
-        start,
-        end,
-        title: '',
-        assignedStaff: '',
-        x: box?.clientX || 300, // Default X position
-        y: box?.clientY || 200, // Default Y position
-      });
-    }
-  };
-
-  // Handle input changes
-  const handleInputChange = (e) => {
-    setModalData((prev) => ({ ...prev, title: e.target.value }));
-  };
-
-  // Handle staff selection
-  const handleStaffSelect = (e) => {
-    setModalData((prev) => ({ ...prev, assignedStaff: e.target.value }));
-  };
-
-  // Handle adding event after selecting color
-  const handleColorSelect = (color) => {
-    if (!modalData?.title.trim()) {
-      alert('Please enter an event title!');
-      return;
-    }
-    if (!modalData.assignedStaff) {
-      alert('Please assign a staff member!');
-      return;
-    }
-
-    setEvents([...events, { ...modalData, color }]);
-    setModalData(null); // Close modal
-  };
+  const {
+    events,
+    modalData,
+    handleSelectSlot,
+    handleInputChange,
+    handleStaffSelect,
+    handleColorSelect
+  } = calendarViewModel();
 
   return (
     <div className="content">
