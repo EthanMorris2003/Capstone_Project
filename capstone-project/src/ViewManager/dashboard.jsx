@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
 import logout from 'capstone-project/src/Assets/logout.svg';
+import Chatbox from '../View/chatbox';
 
 export function Dashboard() {
   const [activeSubBanner, setActiveSubBanner] = useState(1);
@@ -94,6 +95,7 @@ export function Dashboard() {
           <Outlet />
         </div>
       </div>
+      <Chatbox />
     </div>
   );
 }
