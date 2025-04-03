@@ -118,7 +118,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/add_note', async (req, res) => {
-  const {noteId, username, noteTitle, noteContent } = req.body;
+  const {noteId, username, noteTitle, noteContent, notePinned } = req.body;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -131,11 +131,11 @@ app.post('/add_note', async (req, res) => {
       const modifyNoteQuery = 
       `
       UPDATE note
-      SET name = ?, description = ?
+      SET name = ?, description = ?, pinned = ?
       WHERE noteId = ?
       `
 
-      db.query(modifyNoteQuery, [noteTitle, noteContent, noteId], (errModifyNote, resultModifyNote) => {
+      db.query(modifyNoteQuery, [noteTitle, noteContent, notePinned, noteId], (errModifyNote, resultModifyNote) => {
 
         if (errModifyNote) {
           console.error('Error updating note:', errModifyNote);
@@ -153,9 +153,9 @@ app.post('/add_note', async (req, res) => {
     } 
     // If it's a brand new note => add
     else {
-      const addNoteQuery = "INSERT INTO note (name, description) VALUES (?, ?)";
+      const addNoteQuery = "INSERT INTO note (name, description, pinned) VALUES (?, ?, ?)";
 
-      db.query(addNoteQuery, [noteTitle, noteContent], (errAddNote, resultAddNote) => {
+      db.query(addNoteQuery, [noteTitle, noteContent, notePinned], (errAddNote, resultAddNote) => {
 
         if (errAddNote) {
           console.error('Error adding note:', errAddNote);
@@ -166,13 +166,13 @@ app.post('/add_note', async (req, res) => {
         const newnoteId = resultAddNote.insertId;
 
         const addRelationQuery =
-          `
+        `
         INSERT INTO user_note (userId, noteId)
         SELECT ui.userId, n.noteId
         FROM user_info AS ui
         JOIN note n ON n.noteId = ?
         WHERE ui.username = ?
-      `
+        `
 
         db.query(addRelationQuery, [newnoteId, username], (errAddRelation, resultAddRelation) => {
           if (errAddRelation) {
@@ -201,7 +201,7 @@ app.get('/get_note', async (req, res) => {
 
   try {
     const getNoteQuery =
-      `SELECT n.noteId, n.name, n.description FROM note as n
+      `SELECT n.noteId, n.name, n.description, n.pinned FROM note as n
       JOIN user_note AS un ON n.noteId = un.noteId
       WHERE un.userId = (
 	    SELECT userId from user_info

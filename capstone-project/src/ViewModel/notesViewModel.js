@@ -6,6 +6,7 @@ export const useNotesViewModel = () => {
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState('');
   const [noteTitle, setNoteTitle] = useState('');
+  const [notePinned, setNotePinned] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
 
   const username = jwtDecode(localStorage.getItem('authToken')).username;
@@ -21,7 +22,7 @@ export const useNotesViewModel = () => {
         setNotes(result.data);
       }
     };
-  
+
     if (username) {
       getAllNote();
     }
@@ -33,7 +34,7 @@ export const useNotesViewModel = () => {
       return;
     }
 
-    const result = await addNote(editingIndex, username, noteTitle, currentNote);
+    const result = await addNote(editingIndex, username, noteTitle, currentNote, notePinned);
     if (result) {
       alert('Success!');
     } else {
@@ -46,7 +47,7 @@ export const useNotesViewModel = () => {
       if (editingIndex !== null) {
         updatedNotes = updateNote(notes, editingIndex, noteTitle, currentNote);
       } else {
-        const newNote = { title: noteTitle, content: currentNote, pinned: false };
+        const newNote = { name: noteTitle, description: currentNote, pinned: false };
         updatedNotes = [...notes, newNote];
       }
 
@@ -54,6 +55,7 @@ export const useNotesViewModel = () => {
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
+      setNotePinned(false);
     }
   };
 
@@ -71,15 +73,29 @@ export const useNotesViewModel = () => {
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
+      setTrigger(!trigger);
     } else {
       alert('Error deleting note');
     }
   };
 
+  // const handlePinNote = () => {
+  //   if (editingIndex !== null) {
+  //     const updatedNotes = pinNote(notes, editingIndex);
+  //     setNotes(updatedNotes);
+  //   }
+  // };
+
   const handlePinNote = () => {
+    console.log(editingIndex);
+    console.log(notes);
     if (editingIndex !== null) {
-      const updatedNotes = pinNote(notes, editingIndex);
-      setNotes(updatedNotes);
+      setNotes((prevNotes) => {
+        const updatedNotes = prevNotes.map((note) =>
+          note.noteId === editingIndex ? { ...note, pinned: !note.pinned } : note
+        );
+        return updatedNotes.sort((a, b) => b.pinned - a.pinned);
+      });
     }
   };
 

@@ -5,20 +5,24 @@ export const getNote = async (username) => {
     const response = await axios.get('http://localhost:5000/get_note', {
       params: {username}
     });
-    return response.data;
+
+    const returnData = response.data;
+    return returnData;
+
   } catch (error) {
     console.error('Error retrieving notes:', error);
     return false;
   }
 };
 
-export const addNote = async (editingIndex, username, noteTitle, noteContent) => {
+export const addNote = async (editingIndex, username, noteTitle, noteContent, notePinned) => {
   try {
     const response = await axios.post('http://localhost:5000/add_note', {
       noteId: editingIndex,
       username: username,
       noteTitle: noteTitle,
       noteContent: noteContent,
+      notePinned: notePinned
     });
     if (response.data === "Note added successfully" || response.data === "Note modified successfully") {
       return true;
