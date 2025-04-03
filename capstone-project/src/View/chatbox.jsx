@@ -1,42 +1,38 @@
 import React, { useState } from "react";
-import '../Style/chatbox.css'; // Add styles separately
+import '../Style/chatbox.css';
 
 const Chatbox = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([]);  // State to store messages
-    const [input, setInput] = useState("");  // State to store the current input
-    const [replyTo, setReplyTo] = useState(null);  // State to store the message being replied to
+    const [messages, setMessages] = useState([]);
+    const [input, setInput] = useState("");
+    const [replyTo, setReplyTo] = useState(null);
 
-    // Handle input change
     const handleInputChange = (event) => {
-        setInput(event.target.value); // Update input text state
+        setInput(event.target.value);
     };
 
-    // Handle message send
     const handleSend = () => {
         if (input.trim() !== "") {
             const newMessage = {
                 text: input,
-                timestamp: new Date().toLocaleTimeString(), // Add timestamp
-                id: Date.now(), // Unique ID for each message
-                replyTo: replyTo, // Store the message being replied to
+                timestamp: new Date().toLocaleTimeString(),
+                id: Date.now(),
+                replyTo: replyTo,
             };
 
-            setMessages((prevMessages) => [...prevMessages, newMessage]);  // Add new message to the list
-            setInput("");  // Clear input after sending
-            setReplyTo(null);  // Reset the reply state
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+            setInput("");
+            setReplyTo(null);
         }
     };
 
-    // Handle reply to a specific message
     const handleReply = (message) => {
-        setReplyTo(message.id);  // Set the message being replied to
-        setInput(`@${message.timestamp}: `);  // Pre-fill the input with the timestamp of the message being replied to
+        setReplyTo(message.id);
+        setInput(`@${message.timestamp}: `);
     };
 
     return (
         <div className="chat-container">
-            {/* Hide the chat toggle button if chatbox is open */}
             {!isOpen && (
                 <button className="chat-toggle" onClick={() => setIsOpen(!isOpen)}>
                     {isOpen ? "−" : "💬"}
@@ -50,7 +46,6 @@ const Chatbox = () => {
                         <button className="close-button" onClick={() => setIsOpen(false)}>×</button>
                     </div>
                     <div className="chat-body">
-                        {/* Display messages */}
                         {messages.length > 0 ? (
                             messages.map((message) => (
                                 <div key={message.id} className="chat-message">
