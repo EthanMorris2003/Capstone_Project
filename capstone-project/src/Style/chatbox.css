@@ -1,0 +1,123 @@
+.chat-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .chat-toggle {
+    background-color: rgba(15, 46, 79, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 30px;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .chatbox {
+    width: 300px;
+    height: 400px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-header {
+    background-color: rgba(15, 46, 79, 0.5);
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;  /* Space between title and close button */
+    align-items: center;
+  }
+  
+  .chat-title {
+    font-size: 16px;
+  }
+  
+  .close-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .close-button:hover {
+    color: #ccc;
+  }
+  
+  .chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+  }
+  
+  .chat-message {
+    margin-bottom: 10px;
+  }
+  
+  .message-text {
+    font-size: 14px;
+  }
+  
+  .message-footer {
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .timestamp {
+    color: #888;
+  }
+  
+  .reply-to {
+    color: #aaa;
+    font-style: italic;
+  }
+  
+  .reply-button {
+    background-color:rgba(15, 46, 79, 0.5);
+    color: white;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .reply-button:hover {
+    background-color: rgba(15, 46, 79, 0.5);
+  }
+  
+  .chat-footer {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+  }
+  
+  .chat-footer input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .chat-footer button {
+    padding: 8px 12px;
+    background-color: rgba(15, 46, 79, 0.5);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .chat-footer button:hover {
+    background-color: rgba(15, 46, 79, 0.5);
+  }
+  
