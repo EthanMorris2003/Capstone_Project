@@ -117,6 +117,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
+//Reset Password Function
+app.post('/resetPassword', async (req, res) =>{
+  const
+});
+
 app.post('/add_note', async (req, res) => {
   const {noteId, username, noteTitle, noteContent, notePinned } = req.body;
 
