@@ -92,12 +92,11 @@ export function Notes() {
             {/* Rich Text Editor */}
             <ReactQuill
               value={currentNote}
-              onChange={setCurrentNote}
               theme="snow"
               modules={{ toolbar: toolbarOptions }}
               className="rich-editor"
               placeholder="Start typing your note here..."
-              onChange={(e) => setCurrentNote(e.target.value)}
+              onChange={(value) => setCurrentNote(value)}
             />
           </div>
         </div>
