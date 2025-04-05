@@ -8,6 +8,10 @@ export const useNotesViewModel = () => {
   const [noteTitle, setNoteTitle] = useState('');
   const [editingIndex, setEditingIndex] = useState(null);
 
+  // The pinned property is stored as datatype BIT in MySQL. 
+  // When taken from the database, it returns a BUFFER. Access it by doing .pinned.data[0] (0 or 1)
+  const [notePinned, setNotePinned] = useState();
+
   const username = jwtDecode(localStorage.getItem('authToken')).username;
   if (!username) {
     console.error("No credentials found. Please log in");
@@ -18,10 +22,10 @@ export const useNotesViewModel = () => {
     const getAllNote = async () => {
       const result = await getNote(username);
       if (result && result.data) {
-        setNotes(result.data);
+        setNotes(result.data.sort((a, b) => b.pinned - a.pinned));
       }
     };
-  
+
     if (username) {
       getAllNote();
     }
@@ -33,8 +37,7 @@ export const useNotesViewModel = () => {
       return;
     }
 
-    console.log(editingIndex);
-    const result = await addNote(editingIndex, username, noteTitle, currentNote);
+    const result = await addNote(editingIndex, username, noteTitle, currentNote, notePinned);
     if (result) {
       alert('Success!');
     } else {
@@ -47,7 +50,7 @@ export const useNotesViewModel = () => {
       if (editingIndex !== null) {
         updatedNotes = updateNote(notes, editingIndex, noteTitle, currentNote);
       } else {
-        const newNote = { title: noteTitle, content: currentNote, pinned: false };
+        const newNote = { name: noteTitle, description: currentNote, pinned: false };
         updatedNotes = [...notes, newNote];
       }
 
@@ -55,6 +58,7 @@ export const useNotesViewModel = () => {
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
+      setNotePinned(false);
     }
   };
 
@@ -77,10 +81,15 @@ export const useNotesViewModel = () => {
     }
   };
 
-  const handlePinNote = () => {
+
+  const handlePinNote = async () => {
     if (editingIndex !== null) {
-      const updatedNotes = pinNote(notes, editingIndex);
-      setNotes(updatedNotes);
+      const result = await pinNote(editingIndex, notePinned);
+      if (result) {
+        setNotePinned(!notePinned);
+      } else {
+        alert('Error pinning note');
+      }
     }
   };
 
@@ -88,6 +97,7 @@ export const useNotesViewModel = () => {
     setNoteTitle(note.name);
     setCurrentNote(note.description);
     setEditingIndex(index);
+    setNotePinned(note.pinned);
   };
 
   return {
@@ -95,8 +105,10 @@ export const useNotesViewModel = () => {
     currentNote,
     noteTitle,
     editingIndex,
+    notePinned,
     setNoteTitle,
     setCurrentNote,
+    setNotePinned,
     handleCompleteNote,
     handleNewNote,
     handleDeleteNote,

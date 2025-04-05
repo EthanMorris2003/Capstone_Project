@@ -1,35 +1,24 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
+import { signupViewModel } from '../ViewModel/signupViewModel';
 
 function Signup() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate();
-  
-  const handleSignUp = async () => {
-    if (username == '' || password == ''){
-      alert("All fields need to be filled");
-      return;
-    }
-    if (password !== confirmPassword) {
-      alert("Passwords don't match");
-      return;
-    }
-
-    try {
-      const response = await axios.post('http://localhost:5000/signup', {
-        username,
-        password
-      });
-      alert(response.data);
-      navigate("/login");
-    } catch (error) {
-      console.error('Error signing up:', error);
-      alert('Error signing up');
-    }
-  };
+  const {
+    username,
+    password,
+    confirmPassword,
+    firstName,
+    lastName,
+    email,
+    setUsername,
+    setPassword,
+    setConfirmPassword,
+    setFirstName,
+    setLastName,
+    setEmail,
+    handleSignUp
+  } = signupViewModel();
   
   return (
     <div className="backgroundContainer">
@@ -42,7 +31,7 @@ function Signup() {
           <form>
             <input
               placeholder="Username"
-              className="inputBoxUser"
+              className={username ? "inputBoxFilled" : "inputBox"} 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -50,9 +39,9 @@ function Signup() {
           <div className="logText">Password</div>
           <form>
             <input
-              type="password"
+              type='password'
               placeholder="Password"
-              className="inputBoxPass"
+              className={password ? "inputBoxFilled" : "inputBox"} 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -60,11 +49,39 @@ function Signup() {
           <div className="logText">Confirm Password</div>
           <form>
             <input
-              type="password"
+              type='password'
               placeholder="Confirm Password"
-              className="inputBoxPass"
+              className={confirmPassword ? "inputBoxFilled" : "inputBox"} 
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </form>
+          <div className="logText">First Name</div>
+          <form>
+            <input
+              placeholder="First Name"
+              className={firstName ? "inputBoxFilled" : "inputBox"} 
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </form>
+          <div className="logText">Last Name</div>
+          <form>
+            <input
+              placeholder="Last Name"
+              className={lastName ? "inputBoxFilled" : "inputBox"} 
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </form>
+          <div className="logText">Email</div>
+          <form>
+            <input
+              type='email'
+              placeholder="Email"
+              className={email ? "inputBoxFilled" : "inputBox"} 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </form>
           <button className="createAccountButtonSignUp" onClick={handleSignUp}>Sign Up</button>

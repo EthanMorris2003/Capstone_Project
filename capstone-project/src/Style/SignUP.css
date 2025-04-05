@@ -41,8 +41,8 @@ body {
 }
 
 
-.inputBoxUser,
-.inputBoxPass {
+.inputBox {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     height: 42px;
     width: 170%;
     font-size: 16px;
@@ -50,6 +50,22 @@ body {
     border: 1px solid rgb(0, 0, 0);
     color: white;
     background: rgb(73, 73, 73);
+    padding-left: 10px;
+    box-sizing: border-box;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.inputBoxFilled {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    height: 42px;
+    width: 170%;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid rgb(0, 0, 0);
+    color: black;
+    background: rgb(232, 240, 254);
     padding-left: 10px;
     box-sizing: border-box;
     position: relative;

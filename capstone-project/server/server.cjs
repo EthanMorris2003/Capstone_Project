@@ -43,15 +43,21 @@ async function hashPassword(password) {
 
 //Sign up Function
 app.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, firstName, lastName, email } = req.body;
 
   try {
     const hashedPassword = await hashPassword(password);
 
-    const query = 'INSERT INTO user_info (username, password) VALUES (?, AES_ENCRYPT(?, ?))';
-    db.query(query, [username, password, secretKey], (err, result) => {
+    const query = 'INSERT INTO user_info (username, password, email, firstName, lastName) VALUES (?, AES_ENCRYPT(?, ?), ?, ?, ?)';
+    db.query(query, [username, password, secretKey, email, firstName, lastName], (err, result) => {
       if (err) {
         console.error('Error inserting user:', err);
+
+        // Username or email already exists
+        if (err.code === 'ER_DUP_ENTRY') {
+          return res.status(400).send('Username or email already exists');
+        }
+
         res.status(500).send('Error signing up');
         return;
       }
@@ -61,8 +67,7 @@ app.post('/signup', async (req, res) => {
     if (error.name === 'SequelizeUniqueConstraintError') {
       return res.status(400).send('Username already exists');
     }
-    console.error('Error hashing password:', error);
-    res.status(500).send('Error signing up');
+    res.status(500).send('Error signing up: ', error);
   }
 });
 
@@ -113,7 +118,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/add_note', async (req, res) => {
-  const {noteId, username, noteTitle, noteContent } = req.body;
+  const {noteId, username, noteTitle, noteContent, notePinned } = req.body;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -126,11 +131,11 @@ app.post('/add_note', async (req, res) => {
       const modifyNoteQuery = 
       `
       UPDATE note
-      SET name = ?, description = ?
+      SET name = ?, description = ?, pinned = ?
       WHERE noteId = ?
       `
 
-      db.query(modifyNoteQuery, [noteTitle, noteContent, noteId], (errModifyNote, resultModifyNote) => {
+      db.query(modifyNoteQuery, [noteTitle, noteContent, notePinned, noteId], (errModifyNote, resultModifyNote) => {
 
         if (errModifyNote) {
           console.error('Error updating note:', errModifyNote);
@@ -148,9 +153,9 @@ app.post('/add_note', async (req, res) => {
     } 
     // If it's a brand new note => add
     else {
-      const addNoteQuery = "INSERT INTO note (name, description) VALUES (?, ?)";
+      const addNoteQuery = "INSERT INTO note (name, description, pinned) VALUES (?, ?, ?)";
 
-      db.query(addNoteQuery, [noteTitle, noteContent], (errAddNote, resultAddNote) => {
+      db.query(addNoteQuery, [noteTitle, noteContent, notePinned], (errAddNote, resultAddNote) => {
 
         if (errAddNote) {
           console.error('Error adding note:', errAddNote);
@@ -161,13 +166,13 @@ app.post('/add_note', async (req, res) => {
         const newnoteId = resultAddNote.insertId;
 
         const addRelationQuery =
-          `
+        `
         INSERT INTO user_note (userId, noteId)
         SELECT ui.userId, n.noteId
         FROM user_info AS ui
         JOIN note n ON n.noteId = ?
         WHERE ui.username = ?
-      `
+        `
 
         db.query(addRelationQuery, [newnoteId, username], (errAddRelation, resultAddRelation) => {
           if (errAddRelation) {
@@ -196,7 +201,7 @@ app.get('/get_note', async (req, res) => {
 
   try {
     const getNoteQuery =
-      `SELECT n.noteId, n.name, n.description FROM note as n
+      `SELECT n.noteId, n.name, n.description, n.pinned FROM note as n
       JOIN user_note AS un ON n.noteId = un.noteId
       WHERE un.userId = (
 	    SELECT userId from user_info
@@ -246,6 +251,37 @@ app.post('/delete_note', async (req, res) => {
     res.status(500).send('Error deleting note: ', error);
   }
 
+});
+
+app.post('/pin_note', async (req, res) => {
+  const {noteId, notePinned} = req.body;
+
+  if (!noteId) {
+    res.status(400).send('No note found.');
+    return;
+  }
+
+  try {
+    const pinNoteQuery = 
+    `
+    UPDATE note
+    SET pinned = ?
+    WHERE noteId = ?
+    `
+
+    db.query(pinNoteQuery, [notePinned, noteId], (errPinNote, pinNoteResult) => {
+      if (errPinNote) {
+        console.error('Error retrieving notes:', errPinNote);
+        res.status(500).send('Error retrieving notes');
+        return;
+      }
+
+      res.status(201).send("Note pinned successfully");
+    });
+
+  } catch (error) {
+    res.status(500).send('Error pinning note: ', error);
+  }
 });
 
 app.listen(port, () => {

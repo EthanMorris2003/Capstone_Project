@@ -16,6 +16,7 @@ export function Notes() {
     currentNote,
     noteTitle,
     editingIndex,
+    notePinned,
     setNoteTitle,
     setCurrentNote,
     handleCompleteNote,
@@ -48,7 +49,7 @@ export function Notes() {
                 className={`note-item ${note.noteId === editingIndex ? 'selected' : ''}`}
                 onClick={() => selectNote(note, note.noteId)}
               >
-                {note.name} {note.pinned && "📌"}
+                {note.name} {Boolean(note.pinned) && "📌"}
               </div>
             ))}
           </div>
@@ -73,7 +74,7 @@ export function Notes() {
             onClick={handlePinNote}
             disabled={editingIndex === null}
           >
-            {editingIndex !== null && notes[editingIndex]?.pinned ? "Unpin Note" : "Pin Note"}
+            {editingIndex !== null && notePinned ? "Unpin Note" : "Pin Note"}
           </button>
         </div>
 
