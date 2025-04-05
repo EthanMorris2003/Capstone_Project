@@ -253,6 +253,37 @@ app.post('/delete_note', async (req, res) => {
 
 });
 
+app.post('/pin_note', async (req, res) => {
+  const {noteId, notePinned} = req.body;
+
+  if (!noteId) {
+    res.status(400).send('No note found.');
+    return;
+  }
+
+  try {
+    const pinNoteQuery = 
+    `
+    UPDATE note
+    SET pinned = ?
+    WHERE noteId = ?
+    `
+
+    db.query(pinNoteQuery, [notePinned, noteId], (errPinNote, pinNoteResult) => {
+      if (errPinNote) {
+        console.error('Error retrieving notes:', errPinNote);
+        res.status(500).send('Error retrieving notes');
+        return;
+      }
+
+      res.status(201).send("Note pinned successfully");
+    });
+
+  } catch (error) {
+    res.status(500).send('Error pinning note: ', error);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

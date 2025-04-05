@@ -1,3 +1,4 @@
+import { pinNote } from '../Model/notesModel';
 import { useNotesViewModel } from '../ViewModel/notesViewModel';
 
 export function Notes() {
@@ -6,8 +7,10 @@ export function Notes() {
     currentNote,
     noteTitle,
     editingIndex,
+    notePinned,
     setNoteTitle,
     setCurrentNote,
+    setNotePinned,
     handleCompleteNote,
     handleNewNote,
     handleDeleteNote,
@@ -28,7 +31,7 @@ export function Notes() {
                 className={`note-item ${note.noteId === editingIndex ? 'selected' : ''}`}
                 onClick={() => selectNote(note, note.noteId)}
               >
-                {note.name} {note.pinned && "📌"}
+                {note.name} {Boolean(note.pinned) && "📌"}
               </div>
             ))}
           </div>
@@ -52,7 +55,7 @@ export function Notes() {
             onClick={handlePinNote}
             disabled={editingIndex === null}
           >
-            {editingIndex !== null && notes[editingIndex]?.pinned ? "Unpin Note" : "Pin Note"}
+            {editingIndex !== null && notePinned ? "Unpin Note" : "Pin Note"}
           </button>
         </div>
 

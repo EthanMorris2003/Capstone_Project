@@ -6,8 +6,11 @@ export const useNotesViewModel = () => {
   const [notes, setNotes] = useState([]);
   const [currentNote, setCurrentNote] = useState('');
   const [noteTitle, setNoteTitle] = useState('');
-  const [notePinned, setNotePinned] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
+
+  // The pinned property is stored as datatype BIT in MySQL. 
+  // When taken from the database, it returns a BUFFER. Access it by doing .pinned.data[0] (0 or 1)
+  const [notePinned, setNotePinned] = useState();
 
   const username = jwtDecode(localStorage.getItem('authToken')).username;
   if (!username) {
@@ -19,7 +22,7 @@ export const useNotesViewModel = () => {
     const getAllNote = async () => {
       const result = await getNote(username);
       if (result && result.data) {
-        setNotes(result.data);
+        setNotes(result.data.sort((a, b) => b.pinned - a.pinned));
       }
     };
 
@@ -73,29 +76,20 @@ export const useNotesViewModel = () => {
       setCurrentNote('');
       setNoteTitle('');
       setEditingIndex(null);
-      setTrigger(!trigger);
     } else {
       alert('Error deleting note');
     }
   };
 
-  // const handlePinNote = () => {
-  //   if (editingIndex !== null) {
-  //     const updatedNotes = pinNote(notes, editingIndex);
-  //     setNotes(updatedNotes);
-  //   }
-  // };
 
-  const handlePinNote = () => {
-    console.log(editingIndex);
-    console.log(notes);
+  const handlePinNote = async () => {
     if (editingIndex !== null) {
-      setNotes((prevNotes) => {
-        const updatedNotes = prevNotes.map((note) =>
-          note.noteId === editingIndex ? { ...note, pinned: !note.pinned } : note
-        );
-        return updatedNotes.sort((a, b) => b.pinned - a.pinned);
-      });
+      const result = await pinNote(editingIndex, notePinned);
+      if (result) {
+        setNotePinned(!notePinned);
+      } else {
+        alert('Error pinning note');
+      }
     }
   };
 
@@ -103,6 +97,7 @@ export const useNotesViewModel = () => {
     setNoteTitle(note.name);
     setCurrentNote(note.description);
     setEditingIndex(index);
+    setNotePinned(note.pinned);
   };
 
   return {
@@ -110,8 +105,10 @@ export const useNotesViewModel = () => {
     currentNote,
     noteTitle,
     editingIndex,
+    notePinned,
     setNoteTitle,
     setCurrentNote,
+    setNotePinned,
     handleCompleteNote,
     handleNewNote,
     handleDeleteNote,

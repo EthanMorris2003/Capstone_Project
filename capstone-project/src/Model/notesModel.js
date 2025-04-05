@@ -56,8 +56,18 @@ export const updateNote = (notes, editingIndex, newTitle, newContent) => {
   );
 };
 
-export const pinNote = (notes, editingIndex) => {
-  return notes.map((note, idx) =>
-    idx === editingIndex ? { ...note, pinned: !note.pinned } : note
-  ).sort((a, b) => b.pinned - a.pinned);
+export const pinNote = async (editingIndex, notePinned) => {
+  try {
+    const response = await axios.post('http://localhost:5000/pin_note', {
+      noteId: editingIndex,
+      notePinned: (notePinned > 0)? 0 : 1
+    });
+
+    if (response.data === "Note pinned successfully") {
+      return true;
+    }
+  } catch (error) {
+    console.error('Error pinning note:', error);
+    return false;
+  }
 };
