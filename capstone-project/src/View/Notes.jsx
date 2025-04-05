@@ -1,4 +1,3 @@
-import { pinNote } from '../Model/notesModel';
 import { useNotesViewModel } from '../ViewModel/notesViewModel';
 
 export function Notes() {
@@ -10,7 +9,6 @@ export function Notes() {
     notePinned,
     setNoteTitle,
     setCurrentNote,
-    setNotePinned,
     handleCompleteNote,
     handleNewNote,
     handleDeleteNote,
