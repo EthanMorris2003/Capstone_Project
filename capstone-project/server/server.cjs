@@ -7,12 +7,23 @@ const cors = require('cors');
 const secureCompare = require('secure-compare');
 const bcrypt = require('bcrypt'); // For password hashing
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
+//nodemailer reference https://www.w3schools.com/nodejs/nodejs_email.asp
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 const port = 5000;
+const transporter = nodemailer.createTransport({
+  service:'gmail',
+  auth: {
+    user: '',
+    pass: ''
+  }
+});
 
+const mailOptions = {
+
+}
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -173,6 +184,8 @@ app.get('/resetpassword/:id/:token', function(req, res) {
       }
          
     });
+  } catch (error) {
+    res.status(500).send('Reset Password Failed: ', error);
   }
 });
 
