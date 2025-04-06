@@ -16,13 +16,13 @@ const port = 5000;
 const transporter = nodemailer.createTransport({
   service:'gmail',
   auth: {
-    user: '',
-    pass: ''
+    user: 'CapstoneDebtNext@gmail.com',
+    pass: 'CapstoneDebtNext123'
   }
 });
 
 const mailOptions = {
-
+  
 }
 app.use(cors());
 app.use(bodyParser.json());
