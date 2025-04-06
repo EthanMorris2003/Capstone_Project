@@ -13,17 +13,33 @@ require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 const port = 5000;
+
+// Email transporter setup
 const transporter = nodemailer.createTransport({
-  service:'gmail',
+  service: 'gmail',
   auth: {
     user: 'CapstoneDebtNext@gmail.com',
     pass: 'CapstoneDebtNext123'
   }
 });
 
-const mailOptions = {
-  
+// Mail options generator for password reset
+function createPasswordResetEmail(to, name, resetLink) {
+  return {
+    from: 'CapstoneDebtNext@gmail.com',
+    to: to,
+    subject: 'Password Reset Request',
+    text: `Hello ${name},\n\nYou requested to reset your password. Please click the following link to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.\n\nIf you didn't request this, please ignore this email.`,
+    html: `
+      <p>Hello ${name},</p>
+      <p>You requested to reset your password. Please click the following link to reset your password:</p>
+      <p><a href="${resetLink}">Reset Password</a></p>
+      <p>This link will expire in 1 hour.</p>
+      <p>If you didn't request this, please ignore this email.</p>
+    `
+  };
 }
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -128,64 +144,102 @@ app.post('/login', async (req, res) => {
   }
 });
 
-//Reset Password Function
-app.post('/resetPassword', async (req, res) =>{
+// Reset Password Function
+app.post('/resetPassword', async (req, res) => {
   const { username, firstName, lastName, email } = req.body;
 
   try {
-    const query = 'SELECT * AS userID FROM user_info WHERE email = ?';
-    db.query(query, [email], (err, result) => {
+    const query = 'SELECT * FROM user_info WHERE email = ?';
+    db.query(query, [email], async (err, result) => {
       if (err) {
-        console.error('Email not Found:', err);
-        res.status(500).send('Error Finding Account');
-        return;
+        console.error('Database error:', err);
+        return res.status(500).send('Error finding account');
       }
-      if(result.length > 0){
-        const user = result[0];
-        if(secureCompare(username, user.username) 
-          && secureCompare(firstName, user.firstName)
-          && secureCompare(lastName, user.lastName)){
-            let lName = user.lastName;
-            let pass = user.password;
-            let email = user.email;
-            let userID = user.userId;
-        }
-        
+
+      if (result.length === 0) {
+        return res.status(404).send('Account not found');
       }
-      var payload = {
-        id: userID,
-        email: email
-      };
-      var secret = pass + '-' + lName + '-' + userID;
-      var token = jwt.encoode(payload, secret);
-      res.send('<a href="/resetPassword/' + payload.id + '/' + token + '">Reset password</a>');
+
+      const user = result[0];
+      if (!secureCompare(username, user.username) || 
+          !secureCompare(firstName, user.firstName) || 
+          !secureCompare(lastName, user.lastName)) {
+        return res.status(401).send('Invalid account information');
+      }
+
+      // Create reset token with expiration (1 hour)
+      const secret = user.password + '-' + user.lastName + '-' + user.userId;
+      const token = jwt.sign(
+        { id: user.userId, email: user.email },
+        secret,
+        { expiresIn: '1h' }
+      );
+
+      // Generate reset link
+      const resetLink = `${req.protocol}://${req.get('host')}/resetpassword/${user.userId}/${token}`;
+      
+      // Send email
+      try {
+        const mailOptions = createPasswordResetEmail(
+          user.email,
+          user.firstName,
+          resetLink
+        );
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).send('Password reset email sent successfully');
+      } catch (emailError) {
+        console.error('Email sending failed:', emailError);
+        res.status(500).send('Failed to send reset email');
+      }
     });
   } catch (error) {
-    res.status(500).send('Error finding account: ', error);
+    console.error('Server error:', error);
+    res.status(500).send('Internal server error');
   }
 });
 
-app.get('/resetpassword/:id/:token', function(req, res) {
-  // TODO: Fetch user from database using
-  // req.params.id
-  userID = req.params.id 
-  try { 
-    const query = 'SELECT * AS userID FROM user_info WHERE userId = ?';
+// Password reset confirmation
+app.get('/resetpassword/:id/:token', (req, res) => {
+  const userId = req.params.id;
+  const token = req.params.token;
+
+  try {
+    const query = 'SELECT * FROM user_info WHERE userId = ?';
     db.query(query, [userId], (err, result) => {
       if (err) {
-        console.error('User not Found:', err);
-        res.status(500).send('Error Finding Account');
-        return;
+        console.error('Database error:', err);
+        return res.status(500).send('Error finding account');
       }
-      if (result.length > 0){
-        const user = result[0];
-        var secret = user.password + '-' + user.lastName + '-' + user.userId;
-        var payload = jwt.decode(req.params.token, secret);
+
+      if (result.length === 0) {
+        return res.status(404).send('User not found');
       }
-         
+
+      const user = result[0];
+      const secret = user.password + '-' + user.lastName + '-' + user.userId;
+
+      try {
+        const payload = jwt.verify(token, secret);
+        // If we get here, token is valid
+        // Render a password reset form
+        res.send(`
+          <h1>Reset Password</h1>
+          <form action="/updatePassword" method="POST">
+            <input type="hidden" name="userId" value="${user.userId}">
+            <input type="hidden" name="token" value="${token}">
+            <label>New Password: <input type="password" name="newPassword" required></label>
+            <button type="submit">Reset Password</button>
+          </form>
+        `);
+      } catch (jwtError) {
+        console.error('Token verification failed:', jwtError);
+        res.status(400).send('Invalid or expired reset link');
+      }
     });
   } catch (error) {
-    res.status(500).send('Reset Password Failed: ', error);
+    console.error('Server error:', error);
+    res.status(500).send('Internal server error');
   }
 });
 
