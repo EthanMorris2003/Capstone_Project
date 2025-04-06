@@ -19,9 +19,10 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: 'CapstoneDebtNext@gmail.com',
-    pass: 'CapstoneDebtNext123'
+    pass: 'ixgs nhbs bjhb oroi'
   }
 });
+
 
 // Mail options generator for password reset
 function createPasswordResetEmail(to, name, resetLink) {

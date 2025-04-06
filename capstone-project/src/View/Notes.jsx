@@ -32,7 +32,6 @@ export function Notes() {
     ['bold', 'italic', 'underline'],
     [{ 'color': [] }, { 'background': [] }],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-    ['link', 'image'],
     ['clean']
   ];
 

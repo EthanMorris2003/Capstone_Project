@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const resetPass = async (username, password, firstName, lastName, email) => {
+export const resetPass = async (username, firstName, lastName, email) => {
   try {
     const response = await axios.post('http://localhost:5000/resetPassword', {
       username: username,
@@ -8,7 +8,7 @@ export const resetPass = async (username, password, firstName, lastName, email) 
       lastName: lastName,
       email: email
     });
-    if (response.data === 'User signed up successfully') {
+    if (response.data === 'Password reset email sent successfully') {
       return true;
     }
     return false;

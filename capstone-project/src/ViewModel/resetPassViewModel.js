@@ -20,11 +20,11 @@ export const resetPassViewModel = () => {
       return;
     }
 
-    const result = await resetPass(username,  firstName, lastName, email);
+    const result = await resetPass(username, firstName, lastName, email);
     if (result) {
       navigate('/login');
     } else {
-      console.error('Error signing up:', error);
+      console.error('Error signing up: ', result);
       alert('Error signing up');
     }
   };
