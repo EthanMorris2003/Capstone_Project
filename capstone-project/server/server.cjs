@@ -8,11 +8,11 @@ const secureCompare = require('secure-compare');
 const bcrypt = require('bcrypt'); // For password hashing
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
-//nodemailer reference https://www.w3schools.com/nodejs/nodejs_email.asp
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 const port = 5000;
+app.use(express.urlencoded({ extended: true}));
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
@@ -233,6 +233,58 @@ app.get('/resetpassword/:id/:token', (req, res) => {
             <button type="submit">Reset Password</button>
           </form>
         `);
+      } catch (jwtError) {
+        console.error('Token verification failed:', jwtError);
+        res.status(400).send('Invalid or expired reset link');
+      }
+    });
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+app.post('/updatePassword', async (req, res) => {
+  const { userId, token, newPassword } = req.body;
+  if (!userId) {
+    return res.status(400).send('Missing userId');
+  }
+  if (!token) {
+    return res.status(400).send('Missing token');
+  }
+  if (!newPassword) {
+    return res.status(400).send('Missing NewPassword');
+  }
+  try {
+    // First verify the token is valid
+    const query = 'SELECT * FROM user_info WHERE userId = ?';
+    db.query(query, [userId], async (err, result) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).send('Error finding account');
+      }
+      if (result.length === 0) {
+        return res.status(404).send('User not found');
+      }
+      const user = result[0];
+      const secret = user.password + '-' + user.lastName + '-' + user.userId;
+      try {
+        // Verify the token
+        jwt.verify(token, secret);
+        // Hash the new password
+        const hashedPassword = await hashPassword(newPassword);
+        // Update the password in the database
+        const updateQuery = 'UPDATE user_info SET password = AES_ENCRYPT(?, ?) WHERE userId = ?';
+        db.query(updateQuery, [newPassword, secretKey, userId], (updateErr, updateResult) => {
+          if (updateErr) {
+            console.error('Error updating password:', updateErr);
+            return res.status(500).send('Error updating password');
+          }
+          if (updateResult.affectedRows === 0) {
+            return res.status(404).send('User not found');
+          }
+          res.status(200).send('Password updated successfully');
+        });
       } catch (jwtError) {
         console.error('Token verification failed:', jwtError);
         res.status(400).send('Invalid or expired reset link');
