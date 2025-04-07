@@ -64,6 +64,11 @@ function Login() {
               Create An Account
             </button>
           </Link>
+          <Link to="/resetPassword">
+            <button className='resetPasswordButton'>
+              Reset Password
+            </button>
+          </Link>
         </div>
       </div>
     </div>

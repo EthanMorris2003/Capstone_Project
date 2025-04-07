@@ -7,11 +7,39 @@ const cors = require('cors');
 const secureCompare = require('secure-compare');
 const bcrypt = require('bcrypt'); // For password hashing
 const jwt = require('jsonwebtoken');
-
+const nodemailer = require('nodemailer');
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 const port = 5000;
+app.use(express.urlencoded({ extended: true}));
+
+// Email transporter setup
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'CapstoneDebtNext@gmail.com',
+    pass: 'ixgs nhbs bjhb oroi'
+  }
+});
+
+
+// Mail options generator for password reset
+function createPasswordResetEmail(to, name, resetLink) {
+  return {
+    from: 'CapstoneDebtNext@gmail.com',
+    to: to,
+    subject: 'Password Reset Request',
+    text: `Hello ${name},\n\nYou requested to reset your password. Please click the following link to reset your password:\n\n${resetLink}\n\nThis link will expire in 1 hour.\n\nIf you didn't request this, please ignore this email.`,
+    html: `
+      <p>Hello ${name},</p>
+      <p>You requested to reset your password. Please click the following link to reset your password:</p>
+      <p><a href="${resetLink}">Reset Password</a></p>
+      <p>This link will expire in 1 hour.</p>
+      <p>If you didn't request this, please ignore this email.</p>
+    `
+  };
+}
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -114,6 +142,157 @@ app.post('/login', async (req, res) => {
     });
   } catch (error) {
     res.status(500).send('Error logging in: ', error);
+  }
+});
+
+// Reset Password Function
+app.post('/resetPassword', async (req, res) => {
+  const { username, firstName, lastName, email } = req.body;
+
+  try {
+    const query = 'SELECT * FROM user_info WHERE email = ?';
+    db.query(query, [email], async (err, result) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).send('Error finding account');
+      }
+
+      if (result.length === 0) {
+        return res.status(404).send('Account not found');
+      }
+
+      const user = result[0];
+      if (!secureCompare(username, user.username) || 
+          !secureCompare(firstName, user.firstName) || 
+          !secureCompare(lastName, user.lastName)) {
+        return res.status(401).send('Invalid account information');
+      }
+
+      // Create reset token with expiration (1 hour)
+      const secret = user.password + '-' + user.lastName + '-' + user.userId;
+      const token = jwt.sign(
+        { id: user.userId, email: user.email },
+        secret,
+        { expiresIn: '1h' }
+      );
+
+      // Generate reset link
+      const resetLink = `${req.protocol}://${req.get('host')}/resetpassword/${user.userId}/${token}`;
+      
+      // Send email
+      try {
+        const mailOptions = createPasswordResetEmail(
+          user.email,
+          user.firstName,
+          resetLink
+        );
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).send('Password reset email sent successfully');
+      } catch (emailError) {
+        console.error('Email sending failed:', emailError);
+        res.status(500).send('Failed to send reset email');
+      }
+    });
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+// Password reset confirmation
+app.get('/resetpassword/:id/:token', (req, res) => {
+  const userId = req.params.id;
+  const token = req.params.token;
+
+  try {
+    const query = 'SELECT * FROM user_info WHERE userId = ?';
+    db.query(query, [userId], (err, result) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).send('Error finding account');
+      }
+
+      if (result.length === 0) {
+        return res.status(404).send('User not found');
+      }
+
+      const user = result[0];
+      const secret = user.password + '-' + user.lastName + '-' + user.userId;
+
+      try {
+        const payload = jwt.verify(token, secret);
+        // If we get here, token is valid
+        // Render a password reset form
+        res.send(`
+          <h1>Reset Password</h1>
+          <form action="/updatePassword" method="POST">
+            <input type="hidden" name="userId" value="${user.userId}">
+            <input type="hidden" name="token" value="${token}">
+            <label>New Password: <input type="password" name="newPassword" required></label>
+            <button type="submit">Reset Password</button>
+          </form>
+        `);
+      } catch (jwtError) {
+        console.error('Token verification failed:', jwtError);
+        res.status(400).send('Invalid or expired reset link');
+      }
+    });
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+app.post('/updatePassword', async (req, res) => {
+  const { userId, token, newPassword } = req.body;
+  if (!userId) {
+    return res.status(400).send('Missing userId');
+  }
+  if (!token) {
+    return res.status(400).send('Missing token');
+  }
+  if (!newPassword) {
+    return res.status(400).send('Missing NewPassword');
+  }
+  try {
+    // First verify the token is valid
+    const query = 'SELECT * FROM user_info WHERE userId = ?';
+    db.query(query, [userId], async (err, result) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).send('Error finding account');
+      }
+      if (result.length === 0) {
+        return res.status(404).send('User not found');
+      }
+      const user = result[0];
+      const secret = user.password + '-' + user.lastName + '-' + user.userId;
+      try {
+        // Verify the token
+        jwt.verify(token, secret);
+        // Hash the new password
+        const hashedPassword = await hashPassword(newPassword);
+        // Update the password in the database
+        const updateQuery = 'UPDATE user_info SET password = AES_ENCRYPT(?, ?) WHERE userId = ?';
+        db.query(updateQuery, [newPassword, secretKey, userId], (updateErr, updateResult) => {
+          if (updateErr) {
+            console.error('Error updating password:', updateErr);
+            return res.status(500).send('Error updating password');
+          }
+          if (updateResult.affectedRows === 0) {
+            return res.status(404).send('User not found');
+          }
+          res.status(200).send('Password updated successfully');
+        });
+      } catch (jwtError) {
+        console.error('Token verification failed:', jwtError);
+        res.status(400).send('Invalid or expired reset link');
+      }
+    });
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).send('Internal server error');
   }
 });
 

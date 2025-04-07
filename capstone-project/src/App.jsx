@@ -7,6 +7,8 @@ import DashboardHome from './View/DashboardHome';
 import Signup from './View/SignUp';
 import Notes from './View/Notes';
 import Calendar from './View/Calendar';
+import ResetPassword from './View/resetPassword';
+
 import DashboardMain from './ViewManager/dashboard';
 
 function App() {
@@ -21,6 +23,7 @@ function App() {
         </Route>
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="resetPassword" element={<ResetPassword />} />
       </Routes>
     </Router>
   );
