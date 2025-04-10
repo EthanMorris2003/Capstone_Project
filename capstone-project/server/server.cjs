@@ -463,6 +463,39 @@ app.post('/pin_note', async (req, res) => {
   }
 });
 
+app.post('/add_message', async (req, res) => {
+  const {message, sendTime, replyTo} = req.body;
+
+  let isReply = false;
+  if (replyTo != null) isReply = true;
+
+  const addMessageQuery = 
+  `
+  INSERT INTO chatbox (message, sendTime, isReply)
+  VALUES (?, ?, ?)
+  `
+
+  try {
+    db.query(addMessageQuery, [message, sendTime, isReply], (errAddMessage, addMessageResult) => {
+      if (errAddMessage) {
+        console.error('Error adding message: ', errAddMessage);
+        res.status(500).send('Error adding message');
+        return;
+      }
+
+      const messageId = addMessageResult.insertId;
+
+      return res.status(200).send({
+        data: messageId
+      });
+    });
+
+  } catch (error) {
+    res.status(500).send("Error adding message: ", error);
+    console.error(error);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
