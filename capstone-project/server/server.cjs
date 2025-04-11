@@ -496,6 +496,30 @@ app.post('/add_message', async (req, res) => {
   }
 });
 
+app.get('/get_message', async (req, res) => {
+  const getMessageQuery = 
+  `
+  SELECT * FROM chatbox
+  `
+
+  try {
+    db.query(getMessageQuery, (errGetMessage, getMessageResult) => {
+      if (errGetMessage) {
+        console.error('Error adding message: ', errGetMessage);
+        res.status(500).send('Error adding message');
+        return;
+      }
+
+      return res.status(200).send({
+        data: getMessageResult
+      });
+    })
+  } catch (error) {
+    res.status(500).send("Error getting messages: ", error);
+    console.error(error);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

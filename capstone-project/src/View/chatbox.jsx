@@ -38,7 +38,9 @@ const Chatbox = () => {
                     <span className="timestamp">{message.timestamp}</span>
                     {message.replyTo && (
                       <span className="reply-to">
-                        Replying to message from {messages.find(m => m.id === message.replyTo)?.timestamp}
+                        Replying to message from
+                        <br></br>
+                        {messages.find(m => m.id === message.replyTo)?.timestamp}
                       </span>
                     )}
                     <button className="reply-button" onClick={() => handleReply(message)}>

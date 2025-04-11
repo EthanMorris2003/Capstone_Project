@@ -6,11 +6,22 @@ export const addMessage = async (message, sendTime, replyTo) => {
       message: message,
       sendTime: sendTime,
       replyTo: replyTo
-    })
+    });
 
-    console.log(response.data);
+    return response.data;
   } catch (error) {
     console.error('Error adding message:', error);
     return false;
   }
 };
+
+export const getMessage = async () => {
+  try {
+    const respose = await axios.get('http://localhost:5000/get_message');
+
+    return respose.data;
+  } catch (error) {
+    console.error('Error adding message:', error);
+    return false;
+  }
+}

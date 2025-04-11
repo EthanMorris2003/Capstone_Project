@@ -74,10 +74,12 @@
   }
   
   .timestamp {
+    display: block;
     color: #888;
   }
   
   .reply-to {
+    display: block;
     color: #aaa;
     font-style: italic;
   }
