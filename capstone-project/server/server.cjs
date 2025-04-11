@@ -12,7 +12,7 @@ require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
 const port = 5000;
-app.use(express.urlencoded({ extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
@@ -162,9 +162,9 @@ app.post('/resetPassword', async (req, res) => {
       }
 
       const user = result[0];
-      if (!secureCompare(username, user.username) || 
-          !secureCompare(firstName, user.firstName) || 
-          !secureCompare(lastName, user.lastName)) {
+      if (!secureCompare(username, user.username) ||
+        !secureCompare(firstName, user.firstName) ||
+        !secureCompare(lastName, user.lastName)) {
         return res.status(401).send('Invalid account information');
       }
 
@@ -178,7 +178,7 @@ app.post('/resetPassword', async (req, res) => {
 
       // Generate reset link
       const resetLink = `${req.protocol}://${req.get('host')}/resetpassword/${user.userId}/${token}`;
-      
+
       // Send email
       try {
         const mailOptions = createPasswordResetEmail(
@@ -297,7 +297,7 @@ app.post('/updatePassword', async (req, res) => {
 });
 
 app.post('/add_note', async (req, res) => {
-  const {noteId, username, noteTitle, noteContent, notePinned } = req.body;
+  const { noteId, username, noteTitle, noteContent, notePinned } = req.body;
 
   if (!username) {
     res.status(400).send('No user information found. Please log in');
@@ -307,8 +307,8 @@ app.post('/add_note', async (req, res) => {
   try {
     // If there is a note selected => modify
     if (noteId != null) {
-      const modifyNoteQuery = 
-      `
+      const modifyNoteQuery =
+        `
       UPDATE note
       SET name = ?, description = ?, pinned = ?
       WHERE noteId = ?
@@ -329,7 +329,7 @@ app.post('/add_note', async (req, res) => {
         res.status(200).send("Note modified successfully");
       });
 
-    } 
+    }
     // If it's a brand new note => add
     else {
       const addNoteQuery = "INSERT INTO note (name, description, pinned) VALUES (?, ?, ?)";
@@ -345,7 +345,7 @@ app.post('/add_note', async (req, res) => {
         const newnoteId = resultAddNote.insertId;
 
         const addRelationQuery =
-        `
+          `
         INSERT INTO user_note (userId, noteId)
         SELECT ui.userId, n.noteId
         FROM user_info AS ui
@@ -433,7 +433,7 @@ app.post('/delete_note', async (req, res) => {
 });
 
 app.post('/pin_note', async (req, res) => {
-  const {noteId, notePinned} = req.body;
+  const { noteId, notePinned } = req.body;
 
   if (!noteId) {
     res.status(400).send('No note found.');
@@ -441,8 +441,8 @@ app.post('/pin_note', async (req, res) => {
   }
 
   try {
-    const pinNoteQuery = 
-    `
+    const pinNoteQuery =
+      `
     UPDATE note
     SET pinned = ?
     WHERE noteId = ?
@@ -464,13 +464,17 @@ app.post('/pin_note', async (req, res) => {
 });
 
 app.post('/add_message', async (req, res) => {
-  const {message, sendTime, replyTo} = req.body;
+  const { username, message, sendTime, replyTo } = req.body;
+
+  if (!username) {
+    return res.status(400).send("No user credentials found");
+  }
 
   let isReply = false;
   if (replyTo != null) isReply = true;
 
-  const addMessageQuery = 
-  `
+  const addMessageQuery =
+    `
   INSERT INTO chatbox (message, sendTime, isReply)
   VALUES (?, ?, ?)
   `
@@ -485,6 +489,39 @@ app.post('/add_message', async (req, res) => {
 
       const messageId = addMessageResult.insertId;
 
+      const addUserMessageQuery =
+        `
+      INSERT INTO user_message (userId, messageId)
+      SELECT ui.userId, m.messageId
+      FROM user_info AS ui
+      JOIN chatbox AS m ON m.messageId = ?
+      WHERE ui.username = ?
+      `
+
+      db.query(addUserMessageQuery, [messageId, username], (errAddUserMessage, addUserMessageResult) => {
+        if (errAddUserMessage) {
+          console.error('Error adding user-message relationship: ', errAddUserMessage);
+          res.status(500).send('Error adding user-message relationship');
+          return;
+        }
+      })
+
+      if (isReply) {
+        const addReplyQuery =
+          `
+        INSERT INTO reply_to (messageFromId, messageToId)
+        VALUES (?, ?)
+        `
+
+        db.query(addReplyQuery, [messageId, replyTo], (errAddReply, addReplyResult) => {
+          if (errAddReply) {
+            console.error('Error adding reply relationship: ', errAddReply);
+            res.status(500).send('Error adding reply relationship');
+            return;
+          }
+        });
+      }
+
       return res.status(200).send({
         data: messageId
       });
@@ -497,23 +534,28 @@ app.post('/add_message', async (req, res) => {
 });
 
 app.get('/get_message', async (req, res) => {
-  const getMessageQuery = 
+  const getMessageQuery =
   `
-  SELECT * FROM chatbox
+  SELECT 
+  c.*, 
+  r.messageToId AS replyId
+  FROM chatbox c
+  LEFT JOIN reply_to r ON c.messageId = r.messageFromId;
+
   `
 
   try {
     db.query(getMessageQuery, (errGetMessage, getMessageResult) => {
       if (errGetMessage) {
-        console.error('Error adding message: ', errGetMessage);
-        res.status(500).send('Error adding message');
+        console.error('Error getting message: ', errGetMessage);
+        res.status(500).send('Error getting message');
         return;
       }
 
       return res.status(200).send({
-        data: getMessageResult
+        data: getMessageResult,
       });
-    })
+    });
   } catch (error) {
     res.status(500).send("Error getting messages: ", error);
     console.error(error);

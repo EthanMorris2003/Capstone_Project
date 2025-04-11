@@ -23,7 +23,7 @@ export const chatboxViewModel = () => {
             text: msg.message,
             timestamp: new Date(msg.sendTime).toISOString().slice(0, 19).replace('T', ' '),
             id: msg.messageId,
-            replyTo: msg.isReply ? true : false,
+            replyTo: msg.replyId
           };
         });
         setMessages(newMessages)
@@ -40,9 +40,10 @@ export const chatboxViewModel = () => {
   };
 
   const handleSend = async () => {
+    console.log(messages);
+
     if (input.trim() !== "") {
-      const result = await addMessage(input, new Date().toISOString().slice(0, 19).replace('T', ' '), replyTo);
-      console.log(result)
+      const result = await addMessage(username, input, new Date().toISOString().slice(0, 19).replace('T', ' '), replyTo);
 
       if (result) {
         const messageId = result.data;

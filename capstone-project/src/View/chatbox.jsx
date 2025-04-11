@@ -35,14 +35,15 @@ const Chatbox = () => {
                     {message.text}
                   </div>
                   <div className="message-footer">
-                    <span className="timestamp">{message.timestamp}</span>
-                    {message.replyTo && (
-                      <span className="reply-to">
-                        Replying to message from
-                        <br></br>
-                        {messages.find(m => m.id === message.replyTo)?.timestamp}
-                      </span>
-                    )}
+                    <div className="message-info">
+                      <span className="timestamp">{message.timestamp}</span>
+                      {message.replyTo && (
+                        <span className="reply-to">
+                          Replying to <br></br>
+                          {messages.find(m => m.id === message.replyTo)?.text}
+                        </span>
+                      )}
+                    </div>
                     <button className="reply-button" onClick={() => handleReply(message)}>
                       Reply
                     </button>
