@@ -463,6 +463,48 @@ app.post('/pin_note', async (req, res) => {
   }
 });
 
+app.get('/get_staff', async (req, res) => {
+  const { username } = req.query;
+
+  if (!username) {
+    res.status(400).send('No user information found. Please log in');
+    return;
+  }
+
+  try {
+    const getStaffQuery =
+      `Select firstName, lastName from user_info`
+
+    db.query(getStaffQuery, [username], (errGetStaff, getStaffResult) => {
+      if (errGetStaff``) {
+        console.error('Error retrieving Staff:', errGetStaff);
+        res.status(500).send('Error retrieving staff');
+        return;
+      }
+
+      return res.status(200).send({
+        data: getNoteStaff
+      });
+    });
+
+  } catch (error) {
+    res.status(500).send('Error retrieving Staff: ', error);
+  }
+});
+
+app.post('/add_Event', async (req, res) => {
+  
+});
+
+app.get('/get_Calendar', async (req, res) => {
+  
+});
+
+app.post('/delete_Event', async (req, res) => {
+  
+});
+
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
