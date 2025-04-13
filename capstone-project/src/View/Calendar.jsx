@@ -7,11 +7,10 @@ import { calendarViewModel } from '../ViewModel/calendarViewModel';
 const localizer = momentLocalizer(moment);
 const colorOptions = ['#FF5733', '#3498DB', '#2ECC71', '#F1C40F']; // Orange, Blue, Green, Yellow
 
-// Example staff list (Can be fetched from an API in a real app)
-const staffList = ['John Doe', 'Jane Smith', 'Michael Brown', 'Emily Davis'];
 
 export function Calendar() {
   const {
+    users,
     events,
     modalData,
     handleSelectSlot,
@@ -77,7 +76,7 @@ export function Calendar() {
             style={{ width: '100%', marginBottom: '10px' }}
           >
             <option value="">Assign Staff</option>
-            {staffList.map((staff) => (
+            {users.map((staff) => (
               <option key={staff} value={staff}>
                 {staff}
               </option>

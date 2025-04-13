@@ -296,6 +296,31 @@ app.post('/updatePassword', async (req, res) => {
   }
 });
 
+app.get('/get_user', async (req, res) => {
+  try {
+    getUserQuery = 
+    `
+    SELECT firstName, lastName FROM user_info
+    `
+
+    db.query(getUserQuery, (errGetUser, getUserResult) => {
+      if (errGetUser) {
+        console.error('Error getting users:', errGetUser);
+        res.status(500).send('Error getting users');
+        return;
+      }
+
+      return res.status(200).send({
+        data: getUserResult
+      });
+
+    })
+
+  } catch (error) {
+    res.status(500).send('Error getting users: ', error);
+  }
+})
+
 app.post('/add_note', async (req, res) => {
   const { noteId, username, noteTitle, noteContent, notePinned } = req.body;
 
@@ -460,6 +485,72 @@ app.post('/pin_note', async (req, res) => {
 
   } catch (error) {
     res.status(500).send('Error pinning note: ', error);
+  }
+});
+
+app.post('/add_event', async (req, res) => {
+  const {username, title, assignedStaff, start, end, x, y, color } = req.body;
+
+  const addEventQuery = `
+    INSERT INTO calendar (title, assigned_staff, start, end, x, y, color)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  try {
+    db.query(addEventQuery, [title, assignedStaff, start, end, x, y, color], (errAddEvent, addEventResult) => {
+      if (errAddEvent) {
+        console.error('Error adding calendar event: ', errAddEvent);
+        res.status(500).send('Error adding calendar event');
+        return;
+      }
+
+      const eventId = addEventResult.insertId;
+
+      const addEventRelationshipQuery = 
+      `
+      INSERT INTO user_calendar (userId, calendarId)
+      SELECT ui.userId, c.calendarId
+      FROM user_info AS ui
+      LEFT JOIN calendar AS c ON calendarId = ?
+      WHERE ui.username = ?
+      `
+
+      db.query(addEventRelationshipQuery, [eventId, username], (errAddEventRelationship, addEventRelationshipResult) => {
+        if (errAddEventRelationship) {
+          console.error('Error adding event relationship: ', errAddEventRelationship);
+          res.status(500).send('Error adding event relationship');
+          return;
+        }
+      })
+
+      return res.status(200).send('Event added successfully');
+    });
+  } catch (error) {
+    res.status(500).send("Error adding calendar event: ", error);
+    console.error(error);
+  }
+});
+
+app.get('/get_event', async (req, res) => {
+  const getEventQuery =
+    `
+  SELECT * FROM calendar
+  `
+  try {
+    db.query(getEventQuery, (errGetEvent, getEventResult) => {
+      if (errGetEvent) {
+        console.error('Error getting calendar events: ', errGetEvent);
+        res.status(500).send('Error getting calendar events');
+        return;
+      }
+
+      return res.status(200).send({
+        data: getEventResult
+      });
+    });
+  } catch (error) {
+    res.status(500).send("Error getting calendar events: ", error);
+    console.error(error);
   }
 });
 
