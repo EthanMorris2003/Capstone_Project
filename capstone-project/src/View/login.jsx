@@ -1,34 +1,15 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from "react-router-dom";
+import React from 'react';
+import { Link } from "react-router-dom";
+import { loginViewModel } from '../ViewModel/loginViewModel';
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  const handleLogin = async () => {
-    if (username == '' || password == '') {
-      alert("All fields need to be filled");
-      return;
-    }
-
-    try {
-      const response = await axios.post('http://localhost:5000/login', {
-        username,
-        password
-      });
-      if (response.data.message === "User authenticated successfully") {
-        localStorage.setItem('authToken', response.data.token);
-        navigate('/Dashboard');
-      } else {
-        alert('Incorrect Credentials');
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Error logging in');
-    }
-  };
+  const {
+    username,
+    password,
+    setUsername,
+    setPassword,
+    handleLogin
+  } = loginViewModel();
 
   return (
     <div>
