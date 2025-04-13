@@ -39,7 +39,7 @@ const Chatbox = () => {
                       <span className="timestamp">{message.timestamp}</span>
                       {message.replyTo && (
                         <span className="reply-to">
-                          Replying to <br></br>
+                          Replying to: <br></br>
                           {messages.find(m => m.id === message.replyTo)?.text}
                         </span>
                       )}

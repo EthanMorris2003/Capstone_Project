@@ -541,9 +541,8 @@ app.get('/get_message', async (req, res) => {
   r.messageToId AS replyId
   FROM chatbox c
   LEFT JOIN reply_to r ON c.messageId = r.messageFromId;
-
   `
-
+  
   try {
     db.query(getMessageQuery, (errGetMessage, getMessageResult) => {
       if (errGetMessage) {

@@ -95,7 +95,7 @@ export function Dashboard() {
           <Outlet />
         </div>
       </div>
-      <Chatbox />
+      {token && <Chatbox />}
     </div>
   );
 }
