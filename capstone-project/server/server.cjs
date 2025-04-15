@@ -23,6 +23,18 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+function validatePassword(password) {
+  var minNumberofChars = 8;
+  var maxNumberofChars = 20;
+  var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/;
+  if (password.length < minNumberofChars || password.length > maxNumberofChars) {
+    return { valid: false, message: "Password must be 8-20 characters long" };
+  }
+  if (!regularExpression.test(password)) {
+    return { valid: false, message: "Password must contain at least one number and one special character (!@#$%^&*)" };
+  }
+  return { valid: true, message: "Password is valid" };
+}
 
 // Mail options generator for password reset
 function createPasswordResetEmail(to, name, resetLink) {
@@ -72,30 +84,34 @@ async function hashPassword(password) {
 //Sign up Function
 app.post('/signup', async (req, res) => {
   const { username, password, firstName, lastName, email } = req.body;
-
-  try {
-    const hashedPassword = await hashPassword(password);
-
-    const query = 'INSERT INTO user_info (username, password, email, firstName, lastName) VALUES (?, AES_ENCRYPT(?, ?), ?, ?, ?)';
-    db.query(query, [username, password, secretKey, email, firstName, lastName], (err, result) => {
-      if (err) {
-        console.error('Error inserting user:', err);
-
-        // Username or email already exists
-        if (err.code === 'ER_DUP_ENTRY') {
-          return res.status(400).send('Username or email already exists');
+  if(validatePassword(password)){
+    try {
+      const hashedPassword = await hashPassword(password);
+  
+      const query = 'INSERT INTO user_info (username, password, email, firstName, lastName) VALUES (?, AES_ENCRYPT(?, ?), ?, ?, ?)';
+      db.query(query, [username, password, secretKey, email, firstName, lastName], (err, result) => {
+        if (err) {
+          console.error('Error inserting user:', err);
+  
+          // Username or email already exists
+          if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).send('Username or email already exists');
+          }
+  
+          res.status(500).send('Error signing up');
+          return;
         }
-
-        res.status(500).send('Error signing up');
-        return;
+        res.status(200).send('User signed up successfully');
+      });
+    } catch (error) {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        return res.status(400).send('Username already exists');
       }
-      res.status(200).send('User signed up successfully');
-    });
-  } catch (error) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      return res.status(400).send('Username already exists');
+      res.status(500).send('Error signing up: ', error);
     }
-    res.status(500).send('Error signing up: ', error);
+  }
+  else{
+    res.status(400).send('Password does not meet the requirements');
   }
 });
 
@@ -224,14 +240,123 @@ app.get('/resetpassword/:id/:token', (req, res) => {
         const payload = jwt.verify(token, secret);
         // If we get here, token is valid
         // Render a password reset form
-        res.send(`
-          <h1>Reset Password</h1>
-          <form action="/updatePassword" method="POST">
-            <input type="hidden" name="userId" value="${user.userId}">
-            <input type="hidden" name="token" value="${token}">
-            <label>New Password: <input type="password" name="newPassword" required></label>
-            <button type="submit">Reset Password</button>
-          </form>
+        res.send(`<!DOCTYPE html>
+          <html>
+          <head>
+            <title>Reset Password</title>
+            <style>
+              .error { color: red; margin-top: 5px; }
+              input { display: block; margin-bottom: 10px; }
+            </style>
+          </head>
+          <body>
+            <h1>Reset Password</h1>
+            <form id="resetForm">
+              <input type="hidden" name="userId" value="${user.userId}">
+              <input type="hidden" name="token" value="${token}">
+              
+              <div>
+                <label>New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+                <div id="passwordError" class="error"></div>
+              </div>
+              
+              <div>
+                <label>Confirm Password:</label>
+                <input type="password" id="confirmPassword" required>
+                <div id="confirmError" class="error"></div>
+              </div>
+              
+              <button type="submit" id="submitBtn">Reset Password</button>
+              <div id="formError" class="error"></div>
+            </form>
+
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const passwordInput = document.getElementById('newPassword');
+                const confirmInput = document.getElementById('confirmPassword');
+                const passwordError = document.getElementById('passwordError');
+                const confirmError = document.getElementById('confirmError');
+                const submitBtn = document.getElementById('submitBtn');
+                const form = document.getElementById('resetForm');
+
+                function validatePassword(password) {
+                  const rules = {
+                    length: password.length >= 8 && password.length <= 20,
+                    specialChar: /[!@#$%^&*]/.test(password),
+                    number: /[0-9]/.test(password)
+                  };
+
+                  if (!rules.length) return "Must be 8-20 characters";
+                  if (!rules.specialChar) return "Need at least 1 special character (!@#$%^&*)";
+                  if (!rules.number) return "Need at least 1 number";
+                  return null;
+                }
+
+                function validateConfirmPassword() {
+                  if (passwordInput.value !== confirmInput.value) {
+                    confirmError.textContent = "Passwords don't match";
+                    return false;
+                  }
+                  confirmError.textContent = "";
+                  return true;
+                }
+
+                // Real-time validation
+                passwordInput.addEventListener('input', function() {
+                  const error = validatePassword(passwordInput.value);
+                  passwordError.textContent = error || "";
+                  validateConfirmPassword();
+                });
+
+                // Password confirmation check
+                confirmInput.addEventListener('input', validateConfirmPassword);
+
+                // Form submission
+                form.addEventListener('submit', async function(e) {
+                  e.preventDefault();
+                  
+                  const passwordErrorMsg = validatePassword(passwordInput.value);
+                  const passwordsMatch = validateConfirmPassword();
+                  
+                  if (passwordErrorMsg || !passwordsMatch) {
+                    return;
+                  }
+
+                  submitBtn.disabled = true;
+                  submitBtn.textContent = "Processing...";
+
+                  try {
+                    const response = await fetch('/updatePassword', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: form.userId.value,
+                        token: form.token.value,
+                        newPassword: passwordInput.value
+                      })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                      // Show server-provided error message
+                      document.getElementById('formError').textContent = 
+                      data.error || "Password reset failed (code: " + response.status + ")";
+                      throw new Error(data.error);
+                    } 
+                    alert("Password updated successfully!");
+                  } catch (error) {
+                    passwordError.textContent = error.message;
+                  } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Reset Password";
+                  }
+                });
+              });
+            </script>
+          </body>
+          </html>
         `);
       } catch (jwtError) {
         console.error('Token verification failed:', jwtError);
@@ -246,15 +371,16 @@ app.get('/resetpassword/:id/:token', (req, res) => {
 
 app.post('/updatePassword', async (req, res) => {
   const { userId, token, newPassword } = req.body;
-  if (!userId) {
-    return res.status(400).send('Missing userId');
+  if (!userId || !token || !newPassword) {
+    return res.status(400).json({ error: 'Missing required fields' });
   }
-  if (!token) {
-    return res.status(400).send('Missing token');
+
+  // Password validation
+  const validation = validatePassword(newPassword);
+  if (!validation.valid) {
+    return res.status(400).json({ error: validation.message });
   }
-  if (!newPassword) {
-    return res.status(400).send('Missing NewPassword');
-  }
+
   try {
     // First verify the token is valid
     const query = 'SELECT * FROM user_info WHERE userId = ?';
@@ -270,6 +396,9 @@ app.post('/updatePassword', async (req, res) => {
       const secret = user.password + '-' + user.lastName + '-' + user.userId;
       try {
         // Verify the token
+
+        console.log("Token expiration:", jwt.decode(token).exp);
+        console.log("Current timestamp:", Math.floor(Date.now() / 1000));
         jwt.verify(token, secret);
         // Hash the new password
         const hashedPassword = await hashPassword(newPassword);
@@ -283,7 +412,7 @@ app.post('/updatePassword', async (req, res) => {
           if (updateResult.affectedRows === 0) {
             return res.status(404).send('User not found');
           }
-          res.status(200).send('Password updated successfully');
+          res.status(200).json({ message: 'Password updated successfully' });
         });
       } catch (jwtError) {
         console.error('Token verification failed:', jwtError);
