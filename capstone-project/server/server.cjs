@@ -26,12 +26,12 @@ const transporter = nodemailer.createTransport({
 function validatePassword(password) {
   var minNumberofChars = 8;
   var maxNumberofChars = 20;
-  var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/;
+  var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-B])(?=.*[a-b])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/;
   if (password.length < minNumberofChars || password.length > maxNumberofChars) {
     return { valid: false, message: "Password must be 8-20 characters long" };
   }
   if (!regularExpression.test(password)) {
-    return { valid: false, message: "Password must contain at least one number and one special character (!@#$%^&*)" };
+    return { valid: false, message: "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (!@#$%^&*)" };
   }
   return { valid: true, message: "Password is valid" };
 }
