@@ -26,7 +26,7 @@ const transporter = nodemailer.createTransport({
 function validatePassword(password) {
   var minNumberofChars = 8;
   var maxNumberofChars = 20;
-  var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-B])(?=.*[a-b])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/;
+  var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$/;
   if (password.length < minNumberofChars || password.length > maxNumberofChars) {
     return { valid: false, message: "Password must be 8-20 characters long" };
   }
@@ -283,17 +283,21 @@ app.get('/resetpassword/:id/:token', (req, res) => {
                 function validatePassword(password) {
                   const rules = {
                     length: password.length >= 8 && password.length <= 20,
-                    specialChar: /[!@#$%^&*]/.test(password),
-                    number: /[0-9]/.test(password)
-                    upper: /[A-B]/.test(password)
-                    lower: /[a-z]/.test(password)
+                    upper: /[A-Z]/.test(password),
+                    lower: /[a-z]/.test(password),
+                    number: /[0-9]/.test(password),
+                    specialChar: /[!@#$%^&*]/.test(password)
+                    
+                    
                   };
 
                   if (!rules.length) return "Must be 8-20 characters";
-                  if (!rules.specialChar) return "Need at least 1 special character (!@#$%^&*)";
-                  if (!rules.number) return "Need at least 1 number";
                   if (!rules.upper) return "Need at least 1 uppercase letter";
                   if (!rules.lower) return "Need at least 1 lowercase letter";
+                  if (!rules.number) return "Need at least 1 number";
+                  if (!rules.specialChar) return "Need at least 1 special character (!@#$%^&*)";
+                  
+                  
                   return null;
                 }
 
