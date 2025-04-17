@@ -1,14 +1,26 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Invalid token", error);
+        navigate("/login");
+      }
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   return (
     <div>
-      <nav>
-        <ul>
-          <li><Link to="/dashboard">Dashboard</Link></li>
-          <li><Link to="/login">Login</Link></li>
-        </ul>
-      </nav>
+      <p>Redirecting...</p>
     </div>
   );
 }
