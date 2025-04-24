@@ -1,6 +1,7 @@
 import axios from "axios";
 import { resolveContent } from "nodemailer/lib/shared";
 
+// Post a message. Return the ID of the message (unique)
 export const addMessage = async (username, message, sendTime, replyTo) => {
   try {
     const response = await axios.post('http://localhost:5000/add_message', {
@@ -17,6 +18,7 @@ export const addMessage = async (username, message, sendTime, replyTo) => {
   }
 };
 
+// Return all messages
 export const getMessage = async () => {
   try {
     const response = await axios.get('http://localhost:5000/get_message');

@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Resets password. Return true or false.
 export const resetPass = async (username, firstName, lastName, email) => {
   try {
     const response = await axios.post('http://localhost:5000/resetPassword', {

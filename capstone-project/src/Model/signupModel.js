@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Sign a user up. Return true or false.
 export const signUp = async (username, password, firstName, lastName, email) => {
   try {
     const response = await axios.post('http://localhost:5000/signup', {

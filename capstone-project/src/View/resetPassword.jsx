@@ -22,6 +22,8 @@ function resetPass() {
         <div>
           <h1 className="logoTextLog">Reset Password</h1>
         </div>
+
+        {/* Username field */}
         <div className="inputGroup">
           <div className="logText">Username</div>
           <form>
@@ -32,6 +34,8 @@ function resetPass() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </form>
+
+          {/* FirstName field */}
           <div className="logText">First Name</div>
           <form>
             <input
@@ -41,6 +45,8 @@ function resetPass() {
               onChange={(e) => setFirstName(e.target.value)}
             />
           </form>
+
+          {/* LastName field */}
           <div className="logText">Last Name</div>
           <form>
             <input
@@ -50,6 +56,8 @@ function resetPass() {
               onChange={(e) => setLastName(e.target.value)}
             />
           </form>
+
+          {/* Email field */}
           <div className="logText">Email</div>
           <form>
             <input
@@ -60,6 +68,8 @@ function resetPass() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </form>
+
+          {/* Buttons */}
           <button className="createAccountButtonSignUp" onClick={handleResetPass}>
             Submit
           </button>

@@ -22,6 +22,7 @@ export function Calendar() {
   return (
     <div className="content">
       <div className="calendar-wrapper">
+        {/* main Calendar component */}
         <BigCalendar
           localizer={localizer}
           events={events}

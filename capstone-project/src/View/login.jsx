@@ -18,6 +18,7 @@ function Login() {
           <h1 className="logoTextLog">DebtNext Dashboard</h1>
         </div>
         <div className="inputGroup">
+          {/* Username field */}
           <div className="logText">Username</div>
           <form>
             <input
@@ -27,6 +28,8 @@ function Login() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </form>
+
+          {/* Password field */}
           <div className="logText">Password</div>
           <form>
             <input
@@ -37,6 +40,8 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </form>
+
+          {/* Buttons */}
           <button className="inputButton" onClick={handleLogin}>
             Log In
           </button>

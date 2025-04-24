@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Get all notes
 export const getNote = async (username) => {
   try {
     const response = await axios.get('http://localhost:5000/get_note', {
@@ -15,6 +16,7 @@ export const getNote = async (username) => {
   }
 };
 
+// Adds a note, returns true or false
 export const addNote = async (editingIndex, username, noteTitle, noteContent, notePinned) => {
   try {
     const response = await axios.post('http://localhost:5000/add_note', {
@@ -34,6 +36,7 @@ export const addNote = async (editingIndex, username, noteTitle, noteContent, no
   }
 };
 
+// Delete a note, return true or false.
 export const deleteNote = async (editingIndex) => {
   try {
     const response = await axios.post('http://localhost:5000/delete_note', {
@@ -50,12 +53,14 @@ export const deleteNote = async (editingIndex) => {
   }
 };
 
+// Modify a note.
 export const updateNote = (notes, editingIndex, newTitle, newContent) => {
   return notes.map((note, idx) =>
     idx === editingIndex ? { ...note, title: newTitle, content: newContent } : note
   );
 };
 
+// Pins a note, return true or false.
 export const pinNote = async (editingIndex, notePinned) => {
   try {
     const response = await axios.post('http://localhost:5000/pin_note', {

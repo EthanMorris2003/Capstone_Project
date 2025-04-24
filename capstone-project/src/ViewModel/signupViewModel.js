@@ -11,6 +11,7 @@ export const signupViewModel = () => {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
+  // Sign up a new user.
   const handleSignUp = async () => {
     if (
       username == '' || 

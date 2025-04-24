@@ -26,6 +26,8 @@ function Signup() {
         <div>
           <h1 className="logoTextLog">Create Account</h1>
         </div>
+
+        {/* Username field */}
         <div className="inputGroup">
           <div className="logText">Username</div>
           <form>
@@ -36,6 +38,8 @@ function Signup() {
               onChange={(e) => setUsername(e.target.value)}
             />
           </form>
+
+          {/* Password field */}
           <div className="logText">Password</div>
           <form>
             <input
@@ -46,6 +50,8 @@ function Signup() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </form>
+
+          {/* Confirm Password field */}
           <div className="logText">Confirm Password</div>
           <form>
             <input
@@ -56,6 +62,8 @@ function Signup() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </form>
+
+          {/* FirstName field */}
           <div className="logText">First Name</div>
           <form>
             <input
@@ -65,6 +73,8 @@ function Signup() {
               onChange={(e) => setFirstName(e.target.value)}
             />
           </form>
+
+          {/* LastName field */}
           <div className="logText">Last Name</div>
           <form>
             <input
@@ -74,6 +84,8 @@ function Signup() {
               onChange={(e) => setLastName(e.target.value)}
             />
           </form>
+
+          {/* Email field */}
           <div className="logText">Email</div>
           <form>
             <input
@@ -84,6 +96,8 @@ function Signup() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </form>
+
+          {/* Buttons */}
           <button className="createAccountButtonSignUp" onClick={handleSignUp}>Sign Up</button>
           <Link to="/login">
             <button className="backToLoginButtonSignUp">

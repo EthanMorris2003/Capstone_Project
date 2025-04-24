@@ -8,6 +8,7 @@ export const loginViewModel = () => {
 
   const navigate = useNavigate();
 
+  // Logs a user in
   const handleLogin = async () => {
     if (username == '' || password == '') {
       alert("All fields need to be filled");

@@ -9,6 +9,7 @@ export const resetPassViewModel = () => {
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
+  // Resets password
   const handleResetPass = async () => {
     if (
       username == '' || 
