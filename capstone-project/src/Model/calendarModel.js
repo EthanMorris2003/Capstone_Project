@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// Returns full names of all users
 export const getUser = async () => {
   try {
     const response = await axios.get('http://localhost:5000/get_user');
@@ -11,6 +12,7 @@ export const getUser = async () => {
   }
 }
 
+// Add an event. Takes an event, and return true or false for whether the event was added
 export const addEvent = async (username, event) => {
   try {
     const response = await axios.post('http://localhost:5000/add_event', {
@@ -35,6 +37,7 @@ export const addEvent = async (username, event) => {
   }
 }
 
+// Return all events
 export const getEvent = async () => {
   try {
     const response = await axios.get('http://localhost:5000/get_event');

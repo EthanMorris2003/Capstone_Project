@@ -12,12 +12,14 @@ export const useNotesViewModel = () => {
   // When taken from the database, it returns a BUFFER. Access it by doing .pinned.data[0] (0 or 1)
   const [notePinned, setNotePinned] = useState();
 
+  // Retrieve username from token.
   const username = jwtDecode(localStorage.getItem('authToken')).username;
   if (!username) {
     console.error("No credentials found. Please log in");
     return;
   }
 
+  // Retrieve all notes of a user. Triggers when you log in, sign out, or perform an notes action.
   useEffect(() => {
     const getAllNote = async () => {
       const result = await getNote(username);
@@ -31,6 +33,7 @@ export const useNotesViewModel = () => {
     }
   }, [username, notes]);
 
+  // Send a note, or modify if it already exists
   const handleCompleteNote = async () => {
     if (noteTitle === '' || currentNote === '') {
       alert("All fields need to be filled");
@@ -62,12 +65,14 @@ export const useNotesViewModel = () => {
     }
   };
 
+  // Create a brand new note
   const handleNewNote = () => {
     setCurrentNote('');
     setNoteTitle('');
     setEditingIndex(null);
   };
 
+  // Deletes a note.
   const handleDeleteNote = async () => {
     const result = await deleteNote(editingIndex);
     if (result) {
@@ -81,7 +86,7 @@ export const useNotesViewModel = () => {
     }
   };
 
-
+  // Pins a note
   const handlePinNote = async () => {
     if (editingIndex !== null) {
       const result = await pinNote(editingIndex, notePinned);
@@ -93,6 +98,7 @@ export const useNotesViewModel = () => {
     }
   };
 
+  // Change variables to selected note.
   const selectNote = (note, index) => {
     setNoteTitle(note.name);
     setCurrentNote(note.description);

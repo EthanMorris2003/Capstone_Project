@@ -8,12 +8,14 @@ export const chatboxViewModel = () => {
   const [input, setInput] = useState("");
   const [replyTo, setReplyTo] = useState(null);
 
+  // Get username from token
   const username = jwtDecode(localStorage.getItem('authToken')).username;
   if (!username) {
     console.error("No credentials found. Please log in");
     return;
   }
 
+  // Retrieve all messages. Triggers when you log in, sign out, or post a message.
   useEffect(() => {
     const getAllMessage = async () => {
       const result = await getMessage();
@@ -35,10 +37,12 @@ export const chatboxViewModel = () => {
     }
   }, [username, messages]);
 
+  // Update text variable when user types.
   const handleInputChange = (event) => {
     setInput(event.target.value);
   };
 
+  // Post a message
   const handleSend = async () => {
     console.log(messages);
 
@@ -62,6 +66,7 @@ export const chatboxViewModel = () => {
     }
   };
 
+  // Handle replying
   const handleReply = (message) => {
     setReplyTo(message.id);
     setInput(`@${message.timestamp}: `);

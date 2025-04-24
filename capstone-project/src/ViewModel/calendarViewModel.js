@@ -7,12 +7,14 @@ export const calendarViewModel = () => {
   const [events, setEvents] = useState([]);
   const [modalData, setModalData] = useState(null);
 
+  // Get username from token.
   const username = jwtDecode(localStorage.getItem('authToken')).username;
   if (!username) {
     console.error("No credentials found. Please log in");
     return;
   };
 
+  // Retrieve list of all full names of users. Triggers when you either log in or sign out.
   useEffect(() => {
     const getAllUsers = async () => {
       const result = await getUser();
@@ -30,6 +32,7 @@ export const calendarViewModel = () => {
     }
   }, [username]);
 
+  // Retrieve all calendar events. Triggers when you either log in or sign out.
   useEffect(() => {
     const getAllEvents = async () => {
       const result = await getEvent();

@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import logout from 'capstone-project/src/Assets/logout.svg';
 import Chatbox from '../View/chatbox';
 
+// Manage the routing for what views should be rendered.
 export function Dashboard() {
   const [activeSubBanner, setActiveSubBanner] = useState(1);
 
@@ -15,6 +16,7 @@ export function Dashboard() {
     3: "Calendar"
   };
 
+  // Retrieve token to see who is logged in.
   const token = localStorage.getItem('authToken');
   let userInfo;
   if (token) {
@@ -25,6 +27,7 @@ export function Dashboard() {
     }
   }
 
+  // Handle the sidebar routing
   const handleClick = (id) => {
     const isAuthenticated = localStorage.getItem('authToken');
     
@@ -61,6 +64,7 @@ export function Dashboard() {
         <div className="header-divider"></div>
         <h1 className="header-title">DebtNext Home Dashboard</h1>
 
+        {/* Top bar with username */}
         <div className="header-icons">
             {(token && userInfo)?
               (<a className='username' onClick={() => {
@@ -77,6 +81,7 @@ export function Dashboard() {
         </div>
       </div>
 
+      {/* Sidebar with features */}
       <div className='body'>
         <div className="container">
           <div className="banner">
@@ -92,6 +97,7 @@ export function Dashboard() {
             ))}
           </div>
 
+          {/* Child window */}
           <Outlet />
         </div>
       </div>

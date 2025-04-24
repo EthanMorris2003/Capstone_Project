@@ -41,6 +41,8 @@ export function Notes() {
         <div className="notes-sidebar">
           <h3>Previous Notes</h3>
           <hr className="notes-divider" />
+
+          {/* Main editor */}
           <div className="notes-list">
             {notes.map((note) => (
               <div

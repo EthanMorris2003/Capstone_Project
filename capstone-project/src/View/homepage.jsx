@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Home page. Automatically redirect you when you render the page.
 function Home() {
   const navigate = useNavigate();
 

@@ -6,6 +6,7 @@ import placeholder from 'capstone-project/src/Assets/placeholder.svg';
 import placeholder2 from 'capstone-project/src/Assets/placeholder2.svg';
 import logout from 'capstone-project/src/Assets/logout.svg';
 
+// Default page for dashboard
 export function DashboardHome() {
   return (
     <div className="content">

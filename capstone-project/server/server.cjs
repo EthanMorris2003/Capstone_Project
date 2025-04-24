@@ -1,13 +1,15 @@
 require('dotenv').config({ path: './.env' });
 
+// Relevant libraries
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const secureCompare = require('secure-compare');
-const bcrypt = require('bcrypt'); // For password hashing
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+
 require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
@@ -23,6 +25,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+// Check if the reset password is valid
 function validatePassword(password) {
   var minNumberofChars = 8;
   var maxNumberofChars = 20;
@@ -56,6 +59,7 @@ function createPasswordResetEmail(to, name, resetLink) {
 app.use(cors());
 app.use(bodyParser.json());
 
+// Main cloud database
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -377,6 +381,7 @@ app.get('/resetpassword/:id/:token', (req, res) => {
   }
 });
 
+// Update new password call
 app.post('/updatePassword', async (req, res) => {
   const { userId, token, newPassword } = req.body;
   if (!userId || !token || !newPassword) {
@@ -433,6 +438,7 @@ app.post('/updatePassword', async (req, res) => {
   }
 });
 
+// Get all full names from all users that are registered
 app.get('/get_user', async (req, res) => {
   try {
     getUserQuery = 
@@ -458,6 +464,7 @@ app.get('/get_user', async (req, res) => {
   }
 })
 
+// Add a new note to the database
 app.post('/add_note', async (req, res) => {
   const { noteId, username, noteTitle, noteContent, notePinned } = req.body;
 
@@ -532,6 +539,7 @@ app.post('/add_note', async (req, res) => {
   }
 });
 
+// Get all notes of a particular user.
 app.get('/get_note', async (req, res) => {
   const { username } = req.query;
 
@@ -566,6 +574,7 @@ app.get('/get_note', async (req, res) => {
   }
 });
 
+// Delete a note from user
 app.post('/delete_note', async (req, res) => {
   const { noteId } = req.body;
 
@@ -594,6 +603,7 @@ app.post('/delete_note', async (req, res) => {
 
 });
 
+// Pin a note. Will be saved in the database.
 app.post('/pin_note', async (req, res) => {
   const { noteId, notePinned } = req.body;
 
@@ -625,6 +635,7 @@ app.post('/pin_note', async (req, res) => {
   }
 });
 
+// Add a calendar event
 app.post('/add_event', async (req, res) => {
   const {username, title, assignedStaff, start, end, x, y, color } = req.body;
 
@@ -668,6 +679,7 @@ app.post('/add_event', async (req, res) => {
   }
 });
 
+// Get all events that are there
 app.get('/get_event', async (req, res) => {
   const getEventQuery =
     `
@@ -691,6 +703,7 @@ app.get('/get_event', async (req, res) => {
   }
 });
 
+// Post a message
 app.post('/add_message', async (req, res) => {
   const { username, message, sendTime, replyTo } = req.body;
 
@@ -761,6 +774,7 @@ app.post('/add_message', async (req, res) => {
   }
 });
 
+// Get all message to display in chatbox
 app.get('/get_message', async (req, res) => {
   const getMessageQuery =
   `

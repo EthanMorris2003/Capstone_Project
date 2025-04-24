@@ -14,6 +14,7 @@ const Chatbox = () => {
   } = chatboxViewModel();
 
   return (
+    // Chatbox button
     <div className="chat-container">
       {!isOpen && (
         <button className="chat-toggle" onClick={() => setIsOpen(!isOpen)}>
@@ -21,6 +22,7 @@ const Chatbox = () => {
         </button>
       )}
 
+      {/* Main chat window */}
       {isOpen && (
         <div className="chatbox">
           <div className="chat-header">
